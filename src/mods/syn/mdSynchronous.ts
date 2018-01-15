@@ -40,6 +40,9 @@ export default class mdSynchronous extends ModBase {
   }
   protected destroy() {
     super.destroy();
+    if (this.working) {
+      this.endWork();
+    }
   }
   protected onFocus() {
     super.onFocus();

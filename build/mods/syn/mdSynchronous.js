@@ -33,6 +33,9 @@ class mdSynchronous extends ModBase_1.default {
     }
     destroy() {
         super.destroy();
+        if (this.working) {
+            this.endWork();
+        }
     }
     onFocus() {
         super.onFocus();
