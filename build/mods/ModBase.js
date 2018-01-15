@@ -2,23 +2,30 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const processCenter_1 = require("../processCenter");
 const lib_1 = require("../lib/lib");
+const fs = require("fs");
 class ModBase {
-    constructor(center, modName) {
+    constructor(center, modName, dataPath) {
         this.modName = '';
+        this.dataPath = '';
         this.working = false;
+        this.data = '';
         this.center = null;
         this.center = center;
         this.modName = modName;
+        this.dataPath = dataPath;
         this.init();
     }
     init() {
         this.regFocus();
+        this.loadData();
     }
     destroy() {
+        this.writeData();
     }
     onFocus() {
     }
     onUnFocus() {
+        this.writeData();
     }
     getFocus() {
         this.center.handler = this;
@@ -31,6 +38,23 @@ class ModBase {
     }
     getSfEvents(eventsName) {
         return `${this.modName}-${eventsName}`;
+    }
+    loadData() {
+        fs.readFile(this.dataPath, 'utf8', (err, data) => {
+            if (err) {
+                // print.err(err);
+                return;
+            }
+            this.data = JSON.parse(data);
+        });
+    }
+    writeData() {
+        fs.writeFile(this.dataPath, JSON.stringify(this.data), (err) => {
+            if (err) {
+                lib_1.print.err(err);
+                return;
+            }
+        });
     }
     regFocus() {
         this.center.once(this.getPbEvents(this.modName), () => {

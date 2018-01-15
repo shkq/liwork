@@ -37,7 +37,8 @@ class ProcessCenter extends events_1.EventEmitter {
         if (typeof args[0] === 'undefined' || args[0].length === 0) {
             return;
         }
-        this.emit(`${this._handler}-${args}`, args.splice(0, 1));
+        let command = args.splice(0, 1)[0];
+        this.emit(`${this._handler}-${command}`, args);
     }
 }
 ProcessCenter.global = 'global';

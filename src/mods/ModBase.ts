@@ -1,27 +1,33 @@
 import ProcessCenter from "../processCenter";
 import { print } from "../lib/lib";
+import * as fs from 'fs'
+import * as Path from 'path'
 
 export default abstract class ModBase {
-  constructor(center: ProcessCenter, modName: string) {
+  constructor(center: ProcessCenter, modName: string, dataPath: string) {
     this.center = center;
     this.modName = modName;
+    this.dataPath = dataPath;
     this.init();
   }
 
   readonly modName: string = ''
+  readonly dataPath: string = ''
   protected working: boolean = false
+  protected data: any = ''
 
   protected init() {
     this.regFocus();
+    this.loadData();
   }
   protected destroy() {
-
+    this.writeData();
   }
   protected onFocus() {
 
   }
   protected onUnFocus() {
-
+    this.writeData();
   }
 
   protected center: ProcessCenter = null
@@ -37,9 +43,26 @@ export default abstract class ModBase {
   protected getSfEvents(eventsName: string) {
     return `${this.modName}-${eventsName}`
   }
+  protected loadData() {
+    fs.readFile(this.dataPath, 'utf8', (err, data) => {
+      if (err) {
+        // print.err(err);
+        return;
+      }
+      this.data = JSON.parse(data);
+    });
+  }
+  protected writeData() {
+    fs.writeFile(this.dataPath, JSON.stringify(this.data), (err) => {
+      if (err) {
+        print.err(err);
+        return;
+      }
+    })
+  }
 
   private regFocus() {
-    this.center.once(this.getPbEvents(this.modName),()=>{
+    this.center.once(this.getPbEvents(this.modName), () => {
       this.onFocus();
       this.getFocus();
       this.regUnFocus();
@@ -47,7 +70,7 @@ export default abstract class ModBase {
     });
   }
   private regUnFocus() {
-    this.center.once(this.getSfEvents(`~${this.modName}`),()=>{
+    this.center.once(this.getSfEvents(`~${this.modName}`), () => {
       this.onUnFocus();
       this.backFocus();
       this.regFocus();
@@ -55,7 +78,7 @@ export default abstract class ModBase {
     });
   }
   private resDestroy() {
-    this.center.once(this.getPbEvents(ProcessCenter.exit),()=>{
+    this.center.once(this.getPbEvents(ProcessCenter.exit), () => {
       this.destroy();
     });
   }
