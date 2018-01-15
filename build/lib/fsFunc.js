@@ -12,4 +12,39 @@ function mkdir(dirpath) {
     }
 }
 exports.mkdir = mkdir;
+// 删除整个文件夹
+function delDir(path, extra = []) {
+    path = Path.normalize(path);
+    fs.readdir(path, (err, file) => {
+        if (err) {
+            throw err;
+        }
+        file.forEach((element, index) => {
+            let indexpath = Path.join(path, element);
+            fs.stat(indexpath, (err, stat) => {
+                if (err) {
+                    throw err;
+                }
+                if (stat.isDirectory()) {
+                    delDir(indexpath);
+                }
+                else {
+                    let isExtra = false;
+                    extra.forEach(extraEle => {
+                        if (extraEle === element) {
+                            isExtra = true;
+                        }
+                    });
+                    if (isExtra) {
+                        return;
+                    }
+                    else {
+                        // fs.unlink();
+                    }
+                }
+            });
+        });
+    });
+}
+exports.delDir = delDir;
 //# sourceMappingURL=fsFunc.js.map

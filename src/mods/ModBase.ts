@@ -49,7 +49,12 @@ export default abstract class ModBase {
         // print.err(err);
         return;
       }
-      this.data = JSON.parse(data);
+      try {
+        this.data = JSON.parse(data);
+      }
+      catch(err) {
+        // print.err(err);
+      }
     });
   }
   protected writeData() {
