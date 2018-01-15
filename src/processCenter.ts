@@ -43,7 +43,6 @@ export default class ProcessCenter extends EventEmitter {
     if (typeof args[0] === 'undefined' || args[0].length === 0) {
       return;
     }
-    print.log(`${this._handler}-${args}`);
     this.emit(`${this._handler}-${args}`,args.splice(0,1));
   }
 

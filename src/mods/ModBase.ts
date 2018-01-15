@@ -2,17 +2,27 @@ import ProcessCenter from "../processCenter";
 import { print } from "../lib/lib";
 
 export default abstract class ModBase {
-  constructor(center: ProcessCenter) {
+  constructor(center: ProcessCenter, modName: string) {
     this.center = center;
+    this.modName = modName;
     this.init();
-    this.regFocus();
   }
 
-  abstract readonly modName: string
-  protected abstract init()
-  protected abstract destroy()
-  protected abstract onFocus()
-  protected abstract onUnFocus()
+  readonly modName: string = ''
+  protected working: boolean = false
+
+  protected init() {
+    this.regFocus();
+  }
+  protected destroy() {
+
+  }
+  protected onFocus() {
+
+  }
+  protected onUnFocus() {
+
+  }
 
   protected center: ProcessCenter = null
   protected getFocus() {
@@ -42,6 +52,11 @@ export default abstract class ModBase {
       this.backFocus();
       this.regFocus();
       print.wri(`\`${this.modName}\`模块结束监听输入`);
+    });
+  }
+  private resDestroy() {
+    this.center.once(this.getPbEvents(ProcessCenter.exit),()=>{
+      this.destroy();
     });
   }
 }

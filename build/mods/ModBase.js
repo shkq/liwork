@@ -3,11 +3,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const processCenter_1 = require("../processCenter");
 const lib_1 = require("../lib/lib");
 class ModBase {
-    constructor(center) {
+    constructor(center, modName) {
+        this.modName = '';
+        this.working = false;
         this.center = null;
         this.center = center;
+        this.modName = modName;
         this.init();
+    }
+    init() {
         this.regFocus();
+    }
+    destroy() {
+    }
+    onFocus() {
+    }
+    onUnFocus() {
     }
     getFocus() {
         this.center.handler = this;
@@ -35,6 +46,11 @@ class ModBase {
             this.backFocus();
             this.regFocus();
             lib_1.print.wri(`\`${this.modName}\`模块结束监听输入`);
+        });
+    }
+    resDestroy() {
+        this.center.once(this.getPbEvents(processCenter_1.default.exit), () => {
+            this.destroy();
         });
     }
 }

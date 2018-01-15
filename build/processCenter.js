@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const lib = require("./lib/lib");
-const lib_1 = require("./lib/lib");
 class ProcessCenter extends events_1.EventEmitter {
     constructor() {
         super();
@@ -38,7 +37,6 @@ class ProcessCenter extends events_1.EventEmitter {
         if (typeof args[0] === 'undefined' || args[0].length === 0) {
             return;
         }
-        lib_1.print.log(`${this._handler}-${args}`);
         this.emit(`${this._handler}-${args}`, args.splice(0, 1));
     }
 }
