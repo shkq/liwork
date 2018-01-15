@@ -1,8 +1,9 @@
 import * as fs from 'fs'
-import ModBase from "../ModBase"
-import ProcessCenter from "../../processCenter"
+import ModBase from '../ModBase'
+import ProcessCenter from '../../processCenter'
 import { print } from '../../lib/lib'
 import * as Path from 'path'
+import * as strFunc from '../../lib/strFunc'
 
 interface data {
   path: {}
@@ -53,7 +54,13 @@ export default class mdSynchronous extends ModBase {
       print.err(`${this.modName}: 正在工作中,切换路径请先关闭服务`);
       return;
     }
-    this.savePath = Path.normalize(path);
+    let variable = strFunc.isVariable(path);
+    if (variable && typeof this.data[variable] !== 'undefined') {
+      this.savePath = this.data[variable];
+    }
+    else {
+      this.savePath = Path.normalize(path);
+    }
   }
 
   private setWorkPath(path: string) {
@@ -61,7 +68,13 @@ export default class mdSynchronous extends ModBase {
       print.err(`${this.modName}: 正在工作中,切换路径请先关闭服务`);
       return;
     }
-    this.workPath = Path.normalize(path);
+    let variable = strFunc.isVariable(path);
+    if (variable && typeof this.data[variable] !== 'undefined') {
+      this.workPath = this.data[variable];
+    }
+    else {
+      this.workPath = Path.normalize(path);
+    }
   }
 
   private setConstPath(pathName: string, path: string) {

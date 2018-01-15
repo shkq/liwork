@@ -60,4 +60,14 @@ function removeBlank(str) {
     return str;
 }
 exports.removeBlank = removeBlank;
+// 如果字符串已$开头,则返回后面的子串,否则返回false
+function isVariable(str) {
+    if (str[0] === '$') {
+        return str.slice(1);
+    }
+    else {
+        return false;
+    }
+}
+exports.isVariable = isVariable;
 //# sourceMappingURL=strFunc.js.map

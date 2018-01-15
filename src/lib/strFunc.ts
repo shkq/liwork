@@ -53,3 +53,13 @@ export function removeBlank(str: string) {
     }
     return str;
 }
+
+// 如果字符串已$开头,则返回后面的子串,否则返回false
+export function isVariable(str: string) {
+    if (str[0] === '$') {
+        return str.slice(1);
+    }
+    else {
+        return false;
+    }
+}
