@@ -13,12 +13,12 @@ export default class createProcessInteraction {
       input: process.stdin,
       output: process.stdout
     });
-    print.log("liwork 已经启动");
-    print.log('请输入需要执行的命令,输入help获取帮助');
+    print.wri("liwork 已经启动");
+    print.wri('请输入需要执行的命令,输入help获取帮助');
     rl.on('line', (line: string) => {
       this.center.accept(line);
     }).on('close', () => {
-      this.center.accept(ProcessCenter.globalEvents.close);
+      this.center.accept(ProcessCenter.exit);
     });
   }
 
