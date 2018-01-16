@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const Path = require("path");
-const print = require("./print");
+const elucidator_1 = require("./elucidator");
+const elu = new elucidator_1.default('fsFunc');
 // 同步查看路径是否正确,如果有路径不存在则创建
 function mkdir(dirpath) {
     let dirname = Path.dirname(dirpath);
@@ -13,46 +14,62 @@ function mkdir(dirpath) {
     }
 }
 exports.mkdir = mkdir;
-// 删除整个文件夹
+// 删除文件夹文件,可以设置额外列表
 function delDir(path, extra = []) {
     path = Path.normalize(path);
     fs.readdir(path, (err, file) => {
         if (err) {
-            print.err(err);
+            elu.err(err);
             return;
         }
         file.forEach((element, index) => {
-            let indexpath = Path.join(path, element);
-            fs.stat(indexpath, (err, stat) => {
-                if (err) {
-                    print.err(err);
-                    return;
+            elu.log(`deal ${element}`);
+            let isExtra = false;
+            extra.forEach(extraEle => {
+                if (element === extraEle) {
+                    isExtra = true;
                 }
-                if (stat.isDirectory()) {
-                    delDir(indexpath);
-                }
-                else {
-                    let isExtra = false;
-                    extra.forEach(extraEle => {
-                        if (extraEle === element) {
-                            isExtra = true;
-                        }
-                    });
-                    if (isExtra) {
+            });
+            if (isExtra) {
+                elu.log(`${element} is in extra , back`);
+                return;
+            }
+            else {
+                let indexpath = Path.join(path, element);
+                fs.stat(indexpath, (err, stat) => {
+                    if (err) {
+                        elu.err(err);
                         return;
                     }
+                    if (stat.isDirectory()) {
+                        delDir(indexpath, extra);
+                    }
                     else {
+                        elu.log(`delete ${indexpath}`);
                         fs.unlink(indexpath, err => {
                             if (err) {
-                                print.err(err);
+                                elu.err(err);
                                 return;
                             }
                         });
                     }
-                }
-            });
+                });
+            }
         });
     });
 }
 exports.delDir = delDir;
+// 清除所有空文件夹
+function delEmptyDirectory(path) {
+    path = Path.normalize(path);
+    fs.readdir(path, (err, file) => {
+        if (err) {
+            elu.err(err);
+            return;
+        }
+        file.forEach((element, index) => {
+        });
+    });
+}
+exports.delEmptyDirectory = delEmptyDirectory;
 //# sourceMappingURL=fsFunc.js.map
