@@ -16,34 +16,41 @@ export function mkdir(dirpath: string) {
 // 删除整个文件夹
 export function delDir(path: string, extra: string[] = []) {
     path = Path.normalize(path);
-    fs.readdir(path,(err,file)=>{
+    fs.readdir(path, (err, file) => {
         if (err) {
-            throw err
+            print.err(err);
+            return;
         }
-        file.forEach((element,index) => {
-            let indexpath = Path.join(path,element);
-            fs.stat(indexpath,(err,stat)=>{
+        file.forEach((element, index) => {
+            let indexpath = Path.join(path, element);
+            fs.stat(indexpath, (err, stat) => {
                 if (err) {
-                    throw err
+                    print.err(err);
+                    return;
                 }
-                if(stat.isDirectory()){
+                if (stat.isDirectory()) {
                     delDir(indexpath);
                 }
                 else {
                     let isExtra = false;
-                    extra.forEach(extraEle=>{
+                    extra.forEach(extraEle => {
                         if (extraEle === element) {
                             isExtra = true;
                         }
-                    })
+                    });
                     if (isExtra) {
                         return;
                     }
                     else {
-                        // fs.unlink();
+                        fs.unlink(indexpath, err => {
+                            if (err) {
+                                print.err(err);
+                                return;
+                            }
+                        });
                     }
                 }
-            })
+            });
         });
     })
 }
