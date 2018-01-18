@@ -18,7 +18,7 @@ class ProcessCenter extends events_1.EventEmitter {
                 this._handler = ProcessCenter.global;
             }
             else {
-                elu.err("设置handler只能使用继承自\`ModBase\`类型的对象");
+                elu.err("设置handler只能使用继承自\`mdBase\`类型的对象");
             }
         }
         else {

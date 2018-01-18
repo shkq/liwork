@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 
-import ModBase from "./mods/ModBase"
+import mdBase from "./mods/mdBase"
 import elucidator from "./lib/js/elucidator"
 import * as strFunc from "./lib/js/strFunc"
 
@@ -15,7 +15,7 @@ export default class ProcessCenter extends EventEmitter {
     super();
   }
 
-  set handler(val: ModBase | string) {
+  set handler(val: mdBase | string) {
     if (!val) {
       this._handler = ProcessCenter.global;
     }
@@ -24,7 +24,7 @@ export default class ProcessCenter extends EventEmitter {
         this._handler = ProcessCenter.global;
       }
       else {
-        elu.err("设置handler只能使用继承自\`ModBase\`类型的对象");
+        elu.err("设置handler只能使用继承自\`mdBase\`类型的对象");
       }
     }
     else {

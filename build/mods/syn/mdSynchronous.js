@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const Path = require("path");
-const ModBase_1 = require("../ModBase");
+const mdBase_1 = require("../mdBase");
 const strFunc = require("../../lib/js/strFunc");
 const elucidator_1 = require("../../lib/js/elucidator");
 const elu = new elucidator_1.default("mdSynchronous");
-class mdSynchronous extends ModBase_1.default {
+class mdSynchronous extends mdBase_1.default {
     constructor(center) {
         super(center, 'syn', Path.join('./', 'data', 'syndata.data'));
         this.data = {

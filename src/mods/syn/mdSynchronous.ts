@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import * as Path from "path"
 
-import ModBase from "../ModBase"
+import mdBase from "../mdBase"
 import ProcessCenter from "../../processCenter"
 import * as strFunc from "../../lib/js/strFunc"
 import elucidator from "../../lib/js/elucidator"
@@ -12,7 +12,7 @@ interface data {
 
 const elu = new elucidator("mdSynchronous");
 
-export default class mdSynchronous extends ModBase {
+export default class mdSynchronous extends mdBase {
   constructor(center: ProcessCenter) {
     super(center, 'syn', Path.join('./', 'data', 'syndata.data'));
     this.center.on(this.getSfEvents('start'), (args: string[]) => {

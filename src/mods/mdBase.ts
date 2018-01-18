@@ -4,9 +4,9 @@ import * as Path from 'path'
 import ProcessCenter from "../processCenter"
 import elucidator from "../lib/js/elucidator"
 
-const elu = new elucidator("ModBase");
+const elu = new elucidator("mdBase");
 
-export default abstract class ModBase {
+export default abstract class mdBase {
   constructor(center: ProcessCenter, modName: string, dataPath: string) {
     this.center = center;
     this.modName = modName;
