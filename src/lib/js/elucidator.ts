@@ -1,6 +1,8 @@
 export default class elucidator {
   static showlog = true;
   static showerr = true;
+  static showwri = true;
+  
   constructor(mdname: string) {
     this.mdname = mdname;
   }
@@ -22,5 +24,12 @@ export default class elucidator {
     console.error(`${this.mdname}: ${err}`);
     console.error('');
     console.error('*************************');
+  }
+
+  showwri = true
+  wri(any) {
+    if (!this.showwri) return;
+    if (!elucidator.showwri) return;
+    console.log(`${this.mdname}: ${any}`);
   }
 }

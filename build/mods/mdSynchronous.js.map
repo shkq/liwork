@@ -1,1 +1,0 @@
-{"version":3,"file":"mdSynchronous.js","sourceRoot":"","sources":["../../src/mods/mdSynchronous.ts"],"names":[],"mappings":";;AACA,uCAAgC;AAGhC,mBAAmC,SAAQ,iBAAO;IAChD,YAAY,MAAqB;QAC/B,KAAK,CAAC,MAAM,CAAC,CAAC;QAGP,YAAO,GAAG,eAAe,CAAA;IAFlC,CAAC;IAGS,IAAI;QACZ,IAAI,CAAC,MAAM,CAAC,EAAE,EAAE,CAAA;QAAC,CAAC;QAElB,CAAC;IACH,CAAC;CACF;AAXD,gCAWC"}

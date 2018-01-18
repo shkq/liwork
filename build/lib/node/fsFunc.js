@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const Path = require("path");
-const elucidator_1 = require("./elucidator");
+const elucidator_1 = require("../js/elucidator");
 const elu = new elucidator_1.default('fsFunc');
 // 同步查看路径是否正确,如果有路径不存在则创建
 function mkdir(dirpath) {
@@ -166,4 +166,10 @@ function delPath(path, extra = []) {
     });
 }
 exports.delPath = delPath;
+// 复制路径下所有除额外列表内的文件至目标文件夹
+function copyPath(originalPath, targetPath, extra) {
+    return __awaiter(this, void 0, void 0, function* () {
+    });
+}
+exports.copyPath = copyPath;
 //# sourceMappingURL=fsFunc.js.map

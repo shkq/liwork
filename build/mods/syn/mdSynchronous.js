@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
-const ModBase_1 = require("../ModBase");
-const lib_1 = require("../../lib/lib");
 const Path = require("path");
-const strFunc = require("../../lib/strFunc");
+const ModBase_1 = require("../ModBase");
+const strFunc = require("../../lib/js/strFunc");
+const elucidator_1 = require("../../lib/js/elucidator");
+const elu = new elucidator_1.default("mdSynchronous");
 class mdSynchronous extends ModBase_1.default {
     constructor(center) {
         super(center, 'syn', Path.join('./', 'data', 'syndata.data'));
@@ -49,7 +50,7 @@ class mdSynchronous extends ModBase_1.default {
     }
     setSavePath(path) {
         if (this.working) {
-            lib_1.print.err(`${this.modName}: 正在工作中,切换路径请先关闭服务`);
+            elu.log("正在工作中,切换路径请先关闭服务");
             return;
         }
         let variable = strFunc.isVariable(path);
@@ -62,7 +63,7 @@ class mdSynchronous extends ModBase_1.default {
     }
     setWorkPath(path) {
         if (this.working) {
-            lib_1.print.err(`${this.modName}: 正在工作中,切换路径请先关闭服务`);
+            elu.log("正在工作中,切换路径请先关闭服务");
             return;
         }
         let variable = strFunc.isVariable(path);
@@ -75,7 +76,7 @@ class mdSynchronous extends ModBase_1.default {
     }
     setExtra(extra) {
         if (this.working) {
-            lib_1.print.err(`${this.modName}: 正在工作中,添加额外路径请先关闭服务`);
+            elu.log("正在工作中,添加额外路径请先关闭服务");
             return;
         }
         this.extra.push(extra);
@@ -85,15 +86,15 @@ class mdSynchronous extends ModBase_1.default {
     }
     startWork() {
         if (this.working) {
-            lib_1.print.err(`${this.modName}: 已经正在工作了`);
+            elu.log("已经正在工作了");
             return;
         }
         if (this.savePath === '') {
-            lib_1.print.err(`${this.modName}: 未设置保存路径`);
+            elu.log("未设置保存路径");
             return;
         }
         if (this.workPath === '') {
-            lib_1.print.err(`${this.modName}: 未设置工作路径`);
+            elu.log("未设置工作路径");
             return;
         }
         this.workIndex = setInterval(() => {
@@ -102,7 +103,7 @@ class mdSynchronous extends ModBase_1.default {
     }
     endWork() {
         if (!this.working) {
-            lib_1.print.err(`${this.modName}: 并没有在工作中`);
+            elu.log("并没有在工作中");
             return;
         }
         clearInterval(this.workIndex);
@@ -112,12 +113,14 @@ class mdSynchronous extends ModBase_1.default {
     loadIni(path) {
         try {
             if (this.working) {
-                throw `${this.modName}: 正在工作中,读取配置请先关闭服务`;
+                elu.log("正在工作中,读取配置请先关闭服务");
+                return;
             }
             path = Path.normalize(path);
             fs.readFile(this.dataPath, 'utf8', (err, data) => {
                 if (err) {
-                    throw err;
+                    elu.err(err);
+                    return;
                 }
                 let ini = JSON.parse(data);
                 this.savePath = ini.savePath;
@@ -126,8 +129,8 @@ class mdSynchronous extends ModBase_1.default {
             });
         }
         catch (err) {
-            lib_1.print.err(err);
-            lib_1.print.err(`${this.modName}: 读取配置出错,请检查配置文件格式是否正确`);
+            elu.err(err);
+            elu.err("读取配置出错,请检查配置文件格式是否正确");
         }
     }
     work() {

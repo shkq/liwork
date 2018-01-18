@@ -5,6 +5,7 @@ class elucidator {
         this.mdname = '';
         this.showlog = true;
         this.showerr = true;
+        this.showwri = true;
         this.mdname = mdname;
     }
     log(any) {
@@ -25,8 +26,16 @@ class elucidator {
         console.error('');
         console.error('*************************');
     }
+    wri(any) {
+        if (!this.showwri)
+            return;
+        if (!elucidator.showwri)
+            return;
+        console.log(`${this.mdname}: ${any}`);
+    }
 }
 elucidator.showlog = true;
 elucidator.showerr = true;
+elucidator.showwri = true;
 exports.default = elucidator;
 //# sourceMappingURL=elucidator.js.map

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Path = require("path");
-const fsFunc = require("./lib/fsFunc");
-const print = require("./lib/print");
+const fsFunc = require("./lib/node/fsFunc");
+const print = require("./lib/js/print");
 // fsFunc.delDir(Path.join('./','test'),['a.js','C']);
 fsFunc.delPath(Path.join('./', 'test'), ['c.js'])
     .then(() => {

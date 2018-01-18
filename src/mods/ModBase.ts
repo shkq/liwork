@@ -1,7 +1,10 @@
-import ProcessCenter from "../processCenter";
-import { print } from "../lib/lib";
 import * as fs from 'fs'
 import * as Path from 'path'
+
+import ProcessCenter from "../processCenter"
+import elucidator from "../lib/js/elucidator"
+
+const elu = new elucidator("ModBase");
 
 export default abstract class ModBase {
   constructor(center: ProcessCenter, modName: string, dataPath: string) {
@@ -60,7 +63,7 @@ export default abstract class ModBase {
   protected writeData() {
     fs.writeFile(this.dataPath, JSON.stringify(this.data), (err) => {
       if (err) {
-        print.err(err);
+        elu.err(err);
         return;
       }
     })
@@ -71,7 +74,7 @@ export default abstract class ModBase {
       this.onFocus();
       this.getFocus();
       this.regUnFocus();
-      print.wri(`\`${this.modName}\`模块开始监听输入`);
+      elu.wri(`\`${this.modName}\`模块开始监听输入`);
     });
   }
   private regUnFocus() {
@@ -79,7 +82,7 @@ export default abstract class ModBase {
       this.onUnFocus();
       this.backFocus();
       this.regFocus();
-      print.wri(`\`${this.modName}\`模块结束监听输入`);
+      elu.wri(`\`${this.modName}\`模块结束监听输入`);
     });
   }
   private resDestroy() {

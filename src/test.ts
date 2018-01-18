@@ -1,7 +1,7 @@
 import * as Path from 'path'
 
-import * as fsFunc from './lib/fsFunc'
-import * as print from './lib/print'
+import * as fsFunc from './lib/node/fsFunc'
+import * as print from './lib/js/print'
 // fsFunc.delDir(Path.join('./','test'),['a.js','C']);
 
 fsFunc.delPath(Path.join('./','test'),['c.js'])

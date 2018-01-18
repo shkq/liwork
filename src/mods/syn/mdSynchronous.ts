@@ -1,13 +1,16 @@
-import * as fs from 'fs'
-import ModBase from '../ModBase'
-import ProcessCenter from '../../processCenter'
-import { print } from '../../lib/lib'
-import * as Path from 'path'
-import * as strFunc from '../../lib/strFunc'
+import * as fs from "fs"
+import * as Path from "path"
+
+import ModBase from "../ModBase"
+import ProcessCenter from "../../processCenter"
+import * as strFunc from "../../lib/js/strFunc"
+import elucidator from "../../lib/js/elucidator"
 
 interface data {
   path: {}
 }
+
+const elu = new elucidator("mdSynchronous");
 
 export default class mdSynchronous extends ModBase {
   constructor(center: ProcessCenter) {
@@ -57,7 +60,7 @@ export default class mdSynchronous extends ModBase {
 
   private setSavePath(path: string) {
     if (this.working) {
-      print.err(`${this.modName}: 正在工作中,切换路径请先关闭服务`);
+      elu.log("正在工作中,切换路径请先关闭服务");
       return;
     }
     let variable = strFunc.isVariable(path);
@@ -71,7 +74,7 @@ export default class mdSynchronous extends ModBase {
 
   private setWorkPath(path: string) {
     if (this.working) {
-      print.err(`${this.modName}: 正在工作中,切换路径请先关闭服务`);
+      elu.log("正在工作中,切换路径请先关闭服务");
       return;
     }
     let variable = strFunc.isVariable(path);
@@ -85,7 +88,7 @@ export default class mdSynchronous extends ModBase {
 
   private setExtra(extra: string) {
     if (this.working) {
-      print.err(`${this.modName}: 正在工作中,添加额外路径请先关闭服务`);
+      elu.log("正在工作中,添加额外路径请先关闭服务");
       return;
     }
     this.extra.push(extra);
@@ -97,15 +100,15 @@ export default class mdSynchronous extends ModBase {
 
   private startWork() {
     if (this.working) {
-      print.err(`${this.modName}: 已经正在工作了`);
+      elu.log("已经正在工作了");
       return;
     }
     if (this.savePath === '') {
-      print.err(`${this.modName}: 未设置保存路径`);
+      elu.log("未设置保存路径");
       return;
     }
     if (this.workPath === '') {
-      print.err(`${this.modName}: 未设置工作路径`);
+      elu.log("未设置工作路径");
       return;
     }
     this.workIndex = setInterval(()=>{
@@ -115,7 +118,7 @@ export default class mdSynchronous extends ModBase {
 
   private endWork() {
     if (!this.working) {
-      print.err(`${this.modName}: 并没有在工作中`);
+      elu.log("并没有在工作中");
       return;
     }
     clearInterval(this.workIndex);
@@ -126,12 +129,14 @@ export default class mdSynchronous extends ModBase {
   private loadIni(path: string) {
     try {
       if (this.working) {
-        throw `${this.modName}: 正在工作中,读取配置请先关闭服务`;
+        elu.log("正在工作中,读取配置请先关闭服务");
+        return;
       }
       path = Path.normalize(path);
       fs.readFile(this.dataPath, 'utf8', (err, data) => {
         if (err) {
-          throw err;
+          elu.err(err);
+          return;
         }
         let ini = JSON.parse(data);
         this.savePath = ini.savePath;
@@ -140,8 +145,8 @@ export default class mdSynchronous extends ModBase {
       });
     }
     catch (err) {
-      print.err(err);
-      print.err(`${this.modName}: 读取配置出错,请检查配置文件格式是否正确`);
+      elu.err(err);
+      elu.err("读取配置出错,请检查配置文件格式是否正确");
     }
   }
 

@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const processCenter_1 = require("../processCenter");
-const lib_1 = require("../lib/lib");
 const fs = require("fs");
+const processCenter_1 = require("../processCenter");
+const elucidator_1 = require("../lib/js/elucidator");
+const elu = new elucidator_1.default("ModBase");
 class ModBase {
     constructor(center, modName, dataPath) {
         this.modName = '';
@@ -56,7 +57,7 @@ class ModBase {
     writeData() {
         fs.writeFile(this.dataPath, JSON.stringify(this.data), (err) => {
             if (err) {
-                lib_1.print.err(err);
+                elu.err(err);
                 return;
             }
         });
@@ -66,7 +67,7 @@ class ModBase {
             this.onFocus();
             this.getFocus();
             this.regUnFocus();
-            lib_1.print.wri(`\`${this.modName}\`模块开始监听输入`);
+            elu.wri(`\`${this.modName}\`模块开始监听输入`);
         });
     }
     regUnFocus() {
@@ -74,7 +75,7 @@ class ModBase {
             this.onUnFocus();
             this.backFocus();
             this.regFocus();
-            lib_1.print.wri(`\`${this.modName}\`模块结束监听输入`);
+            elu.wri(`\`${this.modName}\`模块结束监听输入`);
         });
     }
     resDestroy() {

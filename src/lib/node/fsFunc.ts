@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as Path from 'path'
-import * as print from './print'
-import elucidator from './elucidator'
+import elucidator from '../js/elucidator'
 
 const elu = new elucidator('fsFunc');
 
@@ -156,4 +155,9 @@ export function delDir(path: string) {
 export async function delPath(path: string, extra: string[] = []) {
   await delFile(path,extra);
   await delDir(path);
+}
+
+// 复制路径下所有除额外列表内的文件至目标文件夹
+export async function copyPath(originalPath: string, targetPath: string, extra: string[]) {
+
 }
