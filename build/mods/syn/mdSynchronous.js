@@ -50,7 +50,7 @@ class mdSynchronous extends mdBase_1.default {
     }
     setSavePath(path) {
         if (this.working) {
-            elu.log("正在工作中,切换路径请先关闭服务");
+            elu.wri("正在工作中,切换路径请先关闭服务");
             return;
         }
         let variable = strFunc.isVariable(path);
@@ -63,7 +63,7 @@ class mdSynchronous extends mdBase_1.default {
     }
     setWorkPath(path) {
         if (this.working) {
-            elu.log("正在工作中,切换路径请先关闭服务");
+            elu.wri("正在工作中,切换路径请先关闭服务");
             return;
         }
         let variable = strFunc.isVariable(path);
@@ -76,7 +76,7 @@ class mdSynchronous extends mdBase_1.default {
     }
     setExtra(extra) {
         if (this.working) {
-            elu.log("正在工作中,添加额外路径请先关闭服务");
+            elu.wri("正在工作中,添加额外路径请先关闭服务");
             return;
         }
         this.extra.push(extra);
@@ -86,15 +86,15 @@ class mdSynchronous extends mdBase_1.default {
     }
     startWork() {
         if (this.working) {
-            elu.log("已经正在工作了");
+            elu.wri("已经正在工作了");
             return;
         }
         if (this.savePath === '') {
-            elu.log("未设置保存路径");
+            elu.wri("未设置保存路径");
             return;
         }
         if (this.workPath === '') {
-            elu.log("未设置工作路径");
+            elu.wri("未设置工作路径");
             return;
         }
         this.workIndex = setInterval(() => {
@@ -103,7 +103,7 @@ class mdSynchronous extends mdBase_1.default {
     }
     endWork() {
         if (!this.working) {
-            elu.log("并没有在工作中");
+            elu.wri("并没有在工作中");
             return;
         }
         clearInterval(this.workIndex);
@@ -113,7 +113,7 @@ class mdSynchronous extends mdBase_1.default {
     loadIni(path) {
         try {
             if (this.working) {
-                elu.log("正在工作中,读取配置请先关闭服务");
+                elu.wri("正在工作中,读取配置请先关闭服务");
                 return;
             }
             path = Path.normalize(path);
