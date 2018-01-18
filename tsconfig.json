@@ -7,7 +7,9 @@
     //在表达式和声明上有隐含的'any'类型时报错。
     "noImplicitAny": false,
     //用于debug  
-    "sourceMap": true,
+    "inlineSourceMap": true,
+    // "sourceMap": true,
+    // "mapRoot": "./build/maps",
     //仅用来控制输出的目录结构--outDir。
     "rootDir": "./src",
     //重定向输出目录。
