@@ -84,7 +84,7 @@ export function delFile(path: string, extra: string[] = []) {
 }
 
 // 删除路径下所有的空文件夹,如果本身为空,那会连自己都删除
-export function delEmptyDirectory(path: string) {
+export function delDir(path: string) {
   return new Promise<boolean>((res, rej) => {
     path = Path.normalize(path);
     fs.readdir(path, (err, file) => {
@@ -138,7 +138,7 @@ export function delEmptyDirectory(path: string) {
               return;
             }
             if (stat.isDirectory()) {
-              delEmptyDirectory(childPath).then(isDeleted => {
+              delDir(childPath).then(isDeleted => {
                 finishThenCheck(isDeleted);
               });
             }
@@ -153,7 +153,7 @@ export function delEmptyDirectory(path: string) {
 }
 
 // 删除路径下所有除额外列表内的文件,并删除所有空文件夹
-export async function deletePath(path: string, extra: string[] = []) {
+export async function delPath(path: string, extra: string[] = []) {
   await delFile(path,extra);
-  await delEmptyDirectory(path);
+  await delDir(path);
 }

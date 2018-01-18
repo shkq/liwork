@@ -4,7 +4,7 @@ import * as fsFunc from './lib/fsFunc'
 import * as print from './lib/print'
 // fsFunc.delDir(Path.join('./','test'),['a.js','C']);
 
-fsFunc.deletePath(Path.join('./','test'))
+fsFunc.delPath(Path.join('./','test'),['c.js'])
 .then(()=>{
   print.log('delDir workdown');
 });
