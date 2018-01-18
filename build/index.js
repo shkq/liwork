@@ -11,7 +11,7 @@ const dataPath = Path.join('./', 'data');
 if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath);
 }
-// 初始化处理模块
+// 初始化处理核心
 const center = new processCenter_1.default();
 // 注册处理模块
 const syn = new mdSynchronous_1.default(center);
