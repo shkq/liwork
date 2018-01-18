@@ -10,10 +10,14 @@ class elucidator {
     log(any) {
         if (!this.showlog)
             return;
+        if (!elucidator.showlog)
+            return;
         console.log(`${this.mdname}: ${any}`);
     }
     err(err) {
         if (!this.showerr)
+            return;
+        if (!elucidator.showerr)
             return;
         console.error('**********ERROR**********');
         console.error('');
@@ -22,5 +26,7 @@ class elucidator {
         console.error('*************************');
     }
 }
+elucidator.showlog = true;
+elucidator.showerr = true;
 exports.default = elucidator;
 //# sourceMappingURL=elucidator.js.map
