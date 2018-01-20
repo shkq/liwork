@@ -149,27 +149,24 @@ export default class mdSynchronous extends mdBase {
     }
     clearInterval(this.workList[identifierNum].timerIdentifier);
     fsFunc.delThenCopyPath(this.workList[identifierNum].targetPath,
-      this.workList[identifierNum].originalPath,this.workList[identifierNum].extra);
-      this.workList.splice(identifierNum,1);
-      
+      this.workList[identifierNum].originalPath, this.workList[identifierNum].extra);
+    this.workList.splice(identifierNum, 1);
+    elu.wri(`已关闭服务 \`${identifier}\``);
   }
 
   private closeAll() {
-    if (!this.working) {
-      elu.wri("并没有在工作中");
-      return;
-    }
-    clearInterval(this.workIndex);
-    this.workIndex = null;
-    this.work();
+    this.workList.forEach((ele,ind)=>{
+      let identifierNum = ind;
+      clearInterval(this.workList[identifierNum].timerIdentifier);
+      fsFunc.delThenCopyPath(this.workList[identifierNum].targetPath,
+        this.workList[identifierNum].originalPath, this.workList[identifierNum].extra);
+      elu.wri(`已关闭服务 \`${identifierNum}\``);
+    });
+    this.workList = [];
   }
 
   private loadIni(path: string) {
     try {
-      if (this.working) {
-        elu.wri("正在工作中,读取配置请先关闭服务");
-        return;
-      }
       path = Path.normalize(path);
       fs.readFile(this.dataPath, 'utf8', (err, data) => {
         if (err) {
@@ -177,9 +174,12 @@ export default class mdSynchronous extends mdBase {
           return;
         }
         let ini = JSON.parse(data);
-        this.originalPath = ini.savePath;
-        this.targetPath = ini.savePath;
-        this.extra = ini.savePath;
+        ini.list.forEach(ele=>{
+          this.originalPath = ele.originalPath;
+          this.targetPath = ele.targetPath;
+          this.extra = ele.extra;
+          this.startWork();
+        });
       });
     }
     catch (err) {
