@@ -2,11 +2,11 @@ export default class elucidator {
   static showlog = true;
   static showerr = true;
   static showwri = true;
-  
+
   constructor(mdname: string) {
     this.mdname = mdname;
   }
-  private mdname: string = ''
+  mdname: string = ''
 
   showlog = true
   log(any) {

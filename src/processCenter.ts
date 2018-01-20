@@ -13,6 +13,9 @@ export default class ProcessCenter extends EventEmitter {
 
   constructor() {
     super();
+    process.once("exit",()=>{
+      this.emit(this.getPbEvents(ProcessCenter.exit));
+    });
   }
 
   set handler(val: mdBase | string) {
@@ -48,6 +51,13 @@ export default class ProcessCenter extends EventEmitter {
     }
     let command = args.splice(0,1)[0];
     this.emit(`${this._handler}-${command}`,args);
+  }
+
+  getPbEvents(eventsName: string) {
+    return `${ProcessCenter.global}-${eventsName}`
+  }
+  getSfEvents(modName:string, eventsName: string) {
+    return `${modName}-${eventsName}`
   }
 
   private _handler: string = ProcessCenter.global

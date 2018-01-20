@@ -1,0 +1,11 @@
+{
+  "list" : [
+    {
+      "originalPath" : "/Users/lijunjie/Project/liwork/build",
+      "targetPath" : "/Users/lijunjie/Project/liwork/test/build",
+      "extra" : [
+        "mods"
+      ]
+    }
+  ]
+}

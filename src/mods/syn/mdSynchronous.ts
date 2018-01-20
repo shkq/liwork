@@ -6,9 +6,10 @@ import ProcessCenter from "../../processCenter"
 import * as strFunc from "../../lib/js/strFunc"
 import elucidator from "../../lib/js/elucidator"
 import * as fsFunc from "../../lib/node/fsFunc"
+import liwork from "../../liwork";
 
-interface data {
-  path: {}
+interface data extends liwork.dataBase{
+
 }
 interface workListItem {
   originalPath: string
@@ -22,6 +23,17 @@ const elu = new elucidator("mdSynchronous");
 export default class mdSynchronous extends mdBase {
   constructor(center: ProcessCenter) {
     super(center, 'syn', Path.join('./', 'data', 'syndata.data'));
+  }
+
+  protected data: data = null
+  private originalPath: string = ''
+  private targetPath: string = ''
+  private extra: string[] = []
+  private readonly refrushTime = 1000 * 60 * 15
+  private workList: workListItem[] = []
+
+  protected init() {
+    super.init();
     this.center.on(this.getSfEvents('start'), (args: string[]) => {
       this.startWork();
     });
@@ -37,25 +49,12 @@ export default class mdSynchronous extends mdBase {
     this.center.on(this.getSfEvents('extra'), (args: string[]) => {
       this.setExtra(args[0]);
     });
-    this.center.on(this.getSfEvents('set'), (args: string[]) => {
-      this.setConstPath(args[0], args[1]);
-    });
     this.center.on(this.getSfEvents('list'), (args: string[]) => {
       this.showList();
     });
-  }
-
-  protected data: data = {
-    path: {}
-  }
-  private originalPath: string = ''
-  private targetPath: string = ''
-  private extra: string[] = []
-  private readonly refrushTime = 1000 * 60 * 15
-  private workList: workListItem[] = []
-
-  protected init() {
-    super.init();
+    this.center.on(this.getSfEvents('json'), (args: string[]) => {
+      this.loadIni(args[0]);
+    });
   }
   protected destroy() {
     super.destroy();
@@ -70,31 +69,15 @@ export default class mdSynchronous extends mdBase {
   }
 
   private setSavePath(path: string) {
-    let variable = strFunc.isVariable(path);
-    if (variable && typeof this.data[variable] !== 'undefined') {
-      this.originalPath = this.data[variable];
-    }
-    else {
-      this.originalPath = Path.normalize(path);
-    }
+    this.originalPath = Path.normalize(this.getVariable(path));
   }
 
   private setWorkPath(path: string) {
-    let variable = strFunc.isVariable(path);
-    if (variable && typeof this.data[variable] !== 'undefined') {
-      this.targetPath = this.data[variable];
-    }
-    else {
-      this.targetPath = Path.normalize(path);
-    }
+    this.targetPath = Path.normalize(this.getVariable(path));
   }
 
   private setExtra(extra: string) {
-    this.extra.push(extra);
-  }
-
-  private setConstPath(pathName: string, path: string) {
-    this.data.path[pathName] = Path.normalize(path);
+    this.extra.push(this.getVariable(extra));
   }
 
   private startWork() {
@@ -167,19 +150,20 @@ export default class mdSynchronous extends mdBase {
 
   private loadIni(path: string) {
     try {
-      path = Path.normalize(path);
-      fs.readFile(this.dataPath, 'utf8', (err, data) => {
+      path = Path.normalize(this.getVariable(path));
+      fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
           elu.err(err);
           return;
         }
         let ini = JSON.parse(data);
-        ini.list.forEach(ele=>{
+        for (let i = 0; i < ini.list.length; i++) {
+          let ele = ini.list[i]
           this.originalPath = ele.originalPath;
           this.targetPath = ele.targetPath;
           this.extra = ele.extra;
           this.startWork();
-        });
+        }
       });
     }
     catch (err) {
