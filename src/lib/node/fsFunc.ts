@@ -1,22 +1,135 @@
 import * as fs from 'fs'
 import * as Path from 'path'
 import elucidator from '../js/elucidator'
+import { exec } from 'child_process';
 
 const elu = new elucidator('fsFunc');
 
-// 同步查看路径是否正确,如果有路径不存在则创建
-export function mkdir(dirpath: string) {
-  let dirname = Path.dirname(dirpath)
-  if (fs.existsSync(dirname)) {
-    return;
-  }
-  else {
+// 复制路径结构
+export function copyDirPath(originalPath: string, targetPath: string) {
+  return new Promise((res, rej) => {
+    originalPath = Path.normalize(originalPath);
+    targetPath = Path.normalize(targetPath);
+    fs.readdir(originalPath, (err, file) => {
+      if (err) {
+        elu.err(err);
+        res();
+        return;
+      }
+      const next = function () {
+        if (file.length === 0) {
+          res();
+          return;
+        }
+        let finishCount = 0;
+        let fileCount = file.length;
+        const finishThenCheck = function () {
+          finishCount++;
+          if (finishCount === fileCount) {
+            res();
+            return;
+          }
+        }
+        file.forEach(element => {
+          let childPath = Path.join(originalPath, element);
+          fs.stat(childPath, (err, stat) => {
+            if (err) {
+              elu.err(err);
+              finishThenCheck();
+              return;
+            }
+            if (stat.isDirectory()) {
+              let toChildPath = Path.join(targetPath, element);
+              copyDirPath(childPath, toChildPath).then(() => {
+                finishThenCheck();
+              });
+            }
+            else {
+              finishThenCheck();
+            }
+          });
+        });
+      }
+      fs.access(targetPath, err => {
+        if (err) {
+          fs.mkdir(targetPath, err => {
+            if (err) {
+              res();
+              return;
+            }
+            elu.log(`create dir ${targetPath}`);
+            next();
+          });
+        }
+        next();
+      });
+    });
+  });
+}
 
-  }
+// 复制文件
+// 需要保证复制路径下目录结构相同,如果不能确定,先使用`copyDirPath`
+export function copyFilePath(originalPath: string, targetPath: string, extra: string[] = []) {
+  return new Promise((res, rej) => {
+    originalPath = Path.normalize(originalPath);
+    targetPath = Path.normalize(targetPath);
+    fs.readdir(originalPath, (err, file) => {
+      if (err) {
+        elu.err(err);
+        res();
+        return;
+      }
+      if (file.length === 0) {
+        res();
+        return;
+      }
+      let finishCount = 0;
+      let fileCount = file.length;
+      const finishThenCheck = function () {
+        finishCount++;
+        if (finishCount === fileCount) {
+          res();
+          return;
+        }
+      }
+      file.forEach(element => {
+        if (checkInextra(element, extra)) {
+          elu.log(`${element} is in extra , back`);
+          finishThenCheck();
+          return;
+        }
+        let childPath = Path.join(originalPath, element);
+        let toChildPath = Path.join(targetPath, element);
+        fs.stat(childPath, (err, stat) => {
+          if (err) {
+            elu.err(err);
+            finishThenCheck();
+            return;
+          }
+          if (stat.isDirectory()) {
+            copyFilePath(childPath, toChildPath, extra).then(() => {
+              finishThenCheck();
+            });
+          }
+          else {
+            fs.copyFile(childPath, toChildPath, err => {
+              if (err) {
+                elu.log(err);
+              }
+              else {
+                elu.log(`copy file ${toChildPath}`);
+              }
+              finishThenCheck();
+            });
+          }
+        });
+      });
+    });
+  });
 }
 
 // 删除文件夹文件,可以设置额外列表
-export function delFile(path: string, extra: string[] = []) {
+export function delFilePath(path: string, extra: string[] = []) {
   return new Promise((res, rej) => {
     path = Path.normalize(path);
     fs.readdir(path, (err, file) => {
@@ -31,24 +144,18 @@ export function delFile(path: string, extra: string[] = []) {
       }
       let finishCount = 0;
       let fileCount = file.length;
-      const finshThenCheck= function() {
+      const finishThenCheck = function () {
         finishCount++;
         if (finishCount === fileCount) {
           res();
           return;
         }
       }
-      file.forEach((element, index) => {
+      file.forEach(element => {
         // elu.log(`deal ${element}`)
-        let isExtra = false;
-        extra.forEach(extraEle => {
-          if (element === extraEle) {
-            isExtra = true;
-          }
-        });
-        if (isExtra) {
+        if (checkInextra(element, extra)) {
           elu.log(`${element} is in extra , back`);
-          finshThenCheck();
+          finishThenCheck();
           return;
         }
         else {
@@ -56,23 +163,23 @@ export function delFile(path: string, extra: string[] = []) {
           fs.stat(childPath, (err, stat) => {
             if (err) {
               elu.err(err);
-              finshThenCheck();
+              finishThenCheck();
               return;
             }
             if (stat.isDirectory()) {
-              delFile(childPath, extra).then(()=>{
-                finshThenCheck();
+              delFilePath(childPath, extra).then(() => {
+                finishThenCheck();
               });
             }
             else {
               fs.unlink(childPath, err => {
                 if (err) {
                   elu.err(err);
-                  finshThenCheck();
+                  finishThenCheck();
                   return;
                 }
                 elu.log(`delete ${childPath}`);
-                finshThenCheck();
+                finishThenCheck();
               });
             }
           });
@@ -83,7 +190,7 @@ export function delFile(path: string, extra: string[] = []) {
 }
 
 // 删除路径下所有的空文件夹,如果本身为空,那会连自己都删除
-export function delDir(path: string) {
+export function delEmptyDirPath(path: string) {
   return new Promise<boolean>((res, rej) => {
     path = Path.normalize(path);
     fs.readdir(path, (err, file) => {
@@ -106,7 +213,7 @@ export function delDir(path: string) {
       else {
         let fileCount = file.length;
         let finishCount = 0;
-        const finishThenCheck = function(isDeleted: boolean) {
+        const finishThenCheck = function (isDeleted: boolean) {
           if (isDeleted) {
             fileCount--;
           }
@@ -128,7 +235,7 @@ export function delDir(path: string) {
             res(false);
           }
         }
-        file.forEach((element, index) => {
+        file.forEach(element => {
           let childPath = Path.join(path, element);
           fs.stat(childPath, (err, stat) => {
             if (err) {
@@ -137,7 +244,7 @@ export function delDir(path: string) {
               return;
             }
             if (stat.isDirectory()) {
-              delDir(childPath).then(isDeleted => {
+              delEmptyDirPath(childPath).then(isDeleted => {
                 finishThenCheck(isDeleted);
               });
             }
@@ -151,13 +258,30 @@ export function delDir(path: string) {
   });
 }
 
+export function checkInextra(filename: string, extra: string[]) {
+  let isExtra = false;
+  extra.forEach(extraEle => {
+    if (filename === extraEle) {
+      isExtra = true;
+    }
+  });
+  return isExtra;
+}
+
 // 删除路径下所有除额外列表内的文件,并删除所有空文件夹
 export async function delPath(path: string, extra: string[] = []) {
-  await delFile(path,extra);
-  await delDir(path);
+  await delFilePath(path, extra);
+  await delEmptyDirPath(path);
 }
 
 // 复制路径下所有除额外列表内的文件至目标文件夹
-export async function copyPath(originalPath: string, targetPath: string, extra: string[]) {
+export async function copyPath(originalPath: string, targetPath: string, extra: string[] = []) {
+  await copyDirPath(originalPath, targetPath);
+  await copyFilePath(originalPath, targetPath, extra);
+}
 
+// 删除旧文件,并复制新文件到文件夹
+export async function delThenCopyPath(originalPath: string, targetPath: string, extra: string[] = []) {
+  await delPath(targetPath, extra);
+  await copyPath(originalPath, targetPath, extra);
 }
