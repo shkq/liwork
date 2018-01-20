@@ -16,7 +16,6 @@ export default abstract class mdBase {
 
   readonly modName: string = ''
   readonly dataPath: string = ''
-  protected working: boolean = false
   protected data: any = ''
 
   protected init() {
