@@ -13,7 +13,7 @@ interface data {
 interface workListItem {
   originalPath: string
   targetPath: string
-  extra: string
+  extra: string[]
   timerIdentifier: NodeJS.Timer
 }
 
@@ -41,7 +41,7 @@ export default class mdSynchronous extends mdBase {
       this.setConstPath(args[0], args[1]);
     });
     this.center.on(this.getSfEvents('list'), (args: string[]) => {
-      this.setConstPath(args[0], args[1]);
+      this.showList();
     });
   }
 
@@ -113,21 +113,45 @@ export default class mdSynchronous extends mdBase {
     let originalPath = this.originalPath;
     let targetPath = this.targetPath;
     let extra = this.extra;
-    fsFunc.delThenCopyPath(targetPath,originalPath,extra).then(()=>{
+    fsFunc.delThenCopyPath(targetPath, originalPath, extra).then(() => {
       elu.wri(`已将 \`${targetPath}\` 同步至 \`${originalPath}\``);
-      let workIdentifier = setInterval(()=>{
-        fsFunc.delThenCopyPath(originalPath,targetPath,extra).then(()=>{
+      let timerIdentifier = setInterval(() => {
+        fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
           elu.wri(`已将 \`${originalPath}\` 同步至 \`${targetPath}\``);
         });
-      },this.refrushTime);
+      }, this.refrushTime);
       elu.wri(`开启服务从 \`${originalPath}\` 同步至 \`${targetPath}\``);
       elu.wri(`额外列表: \`${extra}\``);
       elu.wri(`刷新时间: \`${this.refrushTime}\``);
+      this.workList.push({
+        originalPath: originalPath,
+        targetPath: targetPath,
+        extra: extra,
+        timerIdentifier: timerIdentifier
+      })
+      this.originalPath = '';
+      this.targetPath = '';
+      this.extra = [];
     })
   }
 
-  private closeWork(identifier: string) {
+  private showList() {
+    this.workList.forEach((ele, index) => {
+      elu.wri(`服务 \`${index}\` 从 \`${ele.originalPath}\` 同步至 \`${ele.targetPath}\``);
+    });
+  }
 
+  private closeWork(identifier: string) {
+    let identifierNum = parseInt(identifier);
+    if (typeof this.workList[identifierNum] === "undefined") {
+      elu.wri("无效的列表标示");
+      return;
+    }
+    clearInterval(this.workList[identifierNum].timerIdentifier);
+    fsFunc.delThenCopyPath(this.workList[identifierNum].targetPath,
+      this.workList[identifierNum].originalPath,this.workList[identifierNum].extra);
+      this.workList.splice(identifierNum,1);
+      
   }
 
   private closeAll() {
@@ -165,7 +189,7 @@ export default class mdSynchronous extends mdBase {
   }
 
   private checkWorkRepeat() {
-    this.workList.forEach(ele=>{
+    this.workList.forEach(ele => {
       if (ele.targetPath === this.targetPath && ele.originalPath === this.originalPath) {
         return true;
       }
