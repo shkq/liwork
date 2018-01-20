@@ -270,18 +270,33 @@ export function checkInextra(filename: string, extra: string[]) {
 
 // 删除路径下所有除额外列表内的文件,并删除所有空文件夹
 export async function delPath(path: string, extra: string[] = []) {
-  await delFilePath(path, extra);
-  await delEmptyDirPath(path);
+  try {
+    await delFilePath(path, extra);
+    await delEmptyDirPath(path);
+  }
+  catch (err) {
+    elu.err(err);
+  }
 }
 
 // 复制路径下所有除额外列表内的文件至目标文件夹
 export async function copyPath(originalPath: string, targetPath: string, extra: string[] = []) {
-  await copyDirPath(originalPath, targetPath);
-  await copyFilePath(originalPath, targetPath, extra);
+  try {
+    await copyDirPath(originalPath, targetPath);
+    await copyFilePath(originalPath, targetPath, extra);
+  }
+  catch (err) {
+    elu.err(err);
+  }
 }
 
 // 删除旧文件,并复制新文件到文件夹
 export async function delThenCopyPath(originalPath: string, targetPath: string, extra: string[] = []) {
-  await delPath(targetPath, extra);
-  await copyPath(originalPath, targetPath, extra);
+  try {
+    await delPath(targetPath, extra);
+    await copyPath(originalPath, targetPath, extra);
+  }
+  catch (err) {
+    elu.err(err);
+  }
 }

@@ -149,7 +149,7 @@ export default class mdSynchronous extends mdBase {
       elu.err("读取配置出错,请检查配置文件格式是否正确");
     }
   }
-
+  
   private work() {
     
   }
