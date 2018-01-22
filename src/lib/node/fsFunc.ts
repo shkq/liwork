@@ -4,7 +4,7 @@ import elucidator from '../js/elucidator'
 import { exec } from 'child_process';
 
 const elu = new elucidator('fsFunc');
-
+elu.showlog = false;
 // 复制路径结构
 export function copyDirPath(originalPath: string, targetPath: string) {
   return new Promise((res, rej) => {

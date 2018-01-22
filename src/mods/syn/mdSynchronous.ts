@@ -29,7 +29,8 @@ export default class mdSynchronous extends mdBase {
   private originalPath: string = ''
   private targetPath: string = ''
   private extra: string[] = []
-  private readonly refrushTime = 1000 * 60 * 15
+  private reverseBeforeStart = false
+  private readonly refrushTime = 1000 * 60 * 5
   private workList: workListItem[] = []
 
   protected init() {
@@ -93,11 +94,18 @@ export default class mdSynchronous extends mdBase {
       elu.wri(`已有进行中的工作 从 \`${this.originalPath}\` 同步至 \`${this.targetPath}\``);
       return;
     }
-    let originalPath = this.originalPath;
-    let targetPath = this.targetPath;
-    let extra = this.extra;
-    fsFunc.delThenCopyPath(targetPath, originalPath, extra).then(() => {
-      elu.wri(`已将 \`${targetPath}\` 同步至 \`${originalPath}\``);
+    const originalPath = this.originalPath;
+    const targetPath = this.targetPath;
+    const extra = this.extra;
+    let firstSynOriginalPath = originalPath;
+    let firstSynTargetPath = targetPath;
+    if (this.reverseBeforeStart) {
+      firstSynOriginalPath = targetPath;
+      firstSynTargetPath = originalPath;
+    }
+    elu.log(1);
+    fsFunc.delThenCopyPath(firstSynOriginalPath, firstSynTargetPath, extra).then(() => {
+      elu.wri(`已将 \`${firstSynOriginalPath}\` 同步至 \`${firstSynTargetPath}\``);
       let timerIdentifier = setInterval(() => {
         fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
           elu.wri(`已将 \`${originalPath}\` 同步至 \`${targetPath}\``);
@@ -112,10 +120,8 @@ export default class mdSynchronous extends mdBase {
         extra: extra,
         timerIdentifier: timerIdentifier
       })
-      this.originalPath = '';
-      this.targetPath = '';
-      this.extra = [];
-    })
+      this.clean();
+    });
   }
 
   private showList() {
@@ -162,6 +168,7 @@ export default class mdSynchronous extends mdBase {
           this.originalPath = ele.originalPath;
           this.targetPath = ele.targetPath;
           this.extra = ele.extra;
+          this.reverseBeforeStart = ele.reverseBeforeStart;
           this.startWork();
         }
       });
@@ -179,5 +186,12 @@ export default class mdSynchronous extends mdBase {
       }
     });
     return false;
+  }
+
+  private clean() {
+    this.originalPath = '';
+    this.targetPath = '';
+    this.extra = [];
+    this.reverseBeforeStart = false;
   }
 }

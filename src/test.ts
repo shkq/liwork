@@ -18,6 +18,6 @@ import * as print from './lib/js/print'
 //   print.log("workdown");
 // });
 
-fsFunc.delThenCopyPath(Path.join('./', 'from'), Path.join('./', 'to')).then(() => {
+fsFunc.delThenCopyPath(Path.join('../', 'build'), Path.join('../', 'test', 'build')).then(() => {
   print.log("workdown");
 });

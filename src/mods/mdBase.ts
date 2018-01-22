@@ -60,7 +60,6 @@ export default abstract class mdBase {
   }
   protected getVariable(str: string) {
     let variable = strFunc.isVariable(str);
-    elu.log(variable);
     if (variable && typeof this.data.vars[variable] !== 'undefined') {
       return this.data.vars[variable];
     }
