@@ -8,7 +8,7 @@ import elucidator from "../../lib/js/elucidator"
 import * as fsFunc from "../../lib/node/fsFunc"
 import liwork from "../../liwork";
 
-interface data extends liwork.dataBase{
+interface data extends liwork.dataBase {
 
 }
 interface workListItem {
@@ -103,7 +103,6 @@ export default class mdSynchronous extends mdBase {
       firstSynOriginalPath = targetPath;
       firstSynTargetPath = originalPath;
     }
-    elu.log(1);
     fsFunc.delThenCopyPath(firstSynOriginalPath, firstSynTargetPath, extra).then(() => {
       elu.wri(`已将 \`${firstSynOriginalPath}\` 同步至 \`${firstSynTargetPath}\``);
       let timerIdentifier = setInterval(() => {
@@ -144,7 +143,7 @@ export default class mdSynchronous extends mdBase {
   }
 
   private closeAll() {
-    this.workList.forEach((ele,ind)=>{
+    this.workList.forEach((ele, ind) => {
       let identifierNum = ind;
       clearInterval(this.workList[identifierNum].timerIdentifier);
       fsFunc.delThenCopyPath(this.workList[identifierNum].targetPath,

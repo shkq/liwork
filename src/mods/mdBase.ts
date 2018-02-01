@@ -24,6 +24,7 @@ export default abstract class mdBase {
   protected init() {
     this.regFocus();
     this.regVar();
+    this.regLogVar();
     this.regDestroy();
     this.loadData();
   }
@@ -51,7 +52,7 @@ export default abstract class mdBase {
     return this.center.getPbEvents(eventsName);
   }
   protected getSfEvents(eventsName: string) {
-    return this.center.getSfEvents(this.modName,eventsName);
+    return this.center.getSfEvents(this.modName, eventsName);
   }
   protected initData() {
     this.data = {
@@ -68,6 +69,7 @@ export default abstract class mdBase {
     }
   }
 
+  // 注册事件
   private regFocus() {
     this.center.once(this.getPbEvents(this.modName), () => {
       this.getFocus();
@@ -92,9 +94,20 @@ export default abstract class mdBase {
       this.setVariable(args[0], args[1]);
     });
   }
+  private regLogVar() {
+    this.center.on(this.getSfEvents('logvar'), (args: string[]) => {
+      this.logVar();
+    });
+  }
+
   private setVariable(varName: string, varValue: string) {
     this.data.vars[varName] = varValue;
-    elu.wri(`成功设置 变量 \`${varName}\` \`${varValue}\``)
+    elu.wri(`成功设置 变量 \`${varName}\` \`${varValue}\``);
+  }
+  private logVar() {
+    for (let key in this.data.vars) {
+      elu.wri(`变量 \`${key}\` \`${this.data.vars[key]}\``);
+    }
   }
   private loadData() {
     fs.readFile(this.dataPath, 'utf8', (err, data) => {
@@ -105,13 +118,13 @@ export default abstract class mdBase {
       try {
         this.data = JSON.parse(data);
       }
-      catch(err) {
+      catch (err) {
         this.initData();
       }
     });
   }
   private writeData() {
-    fs.writeFile(this.dataPath, JSON.stringify(this.data),err=>{
+    fs.writeFile(this.dataPath, JSON.stringify(this.data), err => {
       if (err) {
         elu.err(err);
         return;
