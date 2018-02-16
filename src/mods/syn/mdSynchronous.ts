@@ -8,9 +8,8 @@ import elucidator from "../../lib/js/elucidator"
 import * as fsFunc from "../../lib/node/fsFunc"
 import liwork from "../../liwork";
 
-interface data extends liwork.dataBase {
+interface data extends liwork.dataBase { }
 
-}
 interface workListItem {
   originalPath: string
   targetPath: string

@@ -4,6 +4,7 @@ import * as Path from 'path'
 import processCenter from './processCenter'
 import processInteraction from './processInteraction'
 import mdSyn from './mods/syn/mdSynchronous'
+
 // 初始化日志文件夹
 const dataPath = Path.join('./','data');
 if (!fs.existsSync(dataPath)) {
