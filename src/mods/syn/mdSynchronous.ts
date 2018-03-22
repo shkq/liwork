@@ -2,7 +2,6 @@ import * as fs from "fs"
 import * as Path from "path"
 
 import { MdBase } from "../mdBase"
-import ProcessCenter from "../../processCenter"
 import * as strFunc from "../../lib/js/strFunc"
 import elucidator from "../../lib/js/elucidator"
 import * as fsFunc from "../../lib/node/fsFunc"
@@ -35,8 +34,11 @@ export {
 }
 
 class mdSynchronous extends MdBase {
-  constructor(center: ProcessCenter) {
-    super(mainName);
+
+  static readonly mainName = mainName
+
+  constructor() {
+    super();
   }
 
   private command: CommandLike = null

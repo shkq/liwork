@@ -6,7 +6,7 @@ export {
 
 abstract class MdBase {
   constructor(
-    readonly mainName: string = null
+
   ) {
 
   }
