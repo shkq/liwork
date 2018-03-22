@@ -13,7 +13,7 @@ export default class ProcessCenter extends EventEmitter {
 
   constructor() {
     super();
-    process.once("exit",()=>{
+    process.once("exit", () => {
       this.emit(this.getPbEvents(ProcessCenter.exit));
     });
   }
@@ -49,14 +49,14 @@ export default class ProcessCenter extends EventEmitter {
     if (typeof args[0] === 'undefined' || args[0].length === 0) {
       return;
     }
-    let command = args.splice(0,1)[0];
-    this.emit(`${this._handler}-${command}`,args);
+    let command = args.splice(0, 1)[0];
+    this.emit(`${this._handler}-${command}`, args);
   }
 
   getPbEvents(eventsName: string) {
     return `${ProcessCenter.global}-${eventsName}`
   }
-  getSfEvents(modName:string, eventsName: string) {
+  getSfEvents(modName: string, eventsName: string) {
     return `${modName}-${eventsName}`
   }
 
