@@ -150,6 +150,9 @@ class mdSynchronous extends MdBase {
         work.extra = [];
       }
     }
+    if (typeof this.config.interval === "undefined") {
+      this.config.interval = 10 * 60 * 1000;
+    } 
   }
 
   // 无用,暂且保留

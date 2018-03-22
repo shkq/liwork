@@ -11,7 +11,7 @@ function start() {
 
   // 此处注册命令
 
-  commandMods[mdSynchronous.name] = new mdSynchronous();
+  commandMods[mdSynchronous.mainName] = new mdSynchronous();
 
   const command = CommandGetter.get();
   const runMod = commandMods[command.main];
