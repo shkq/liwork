@@ -32,4 +32,8 @@ export default class elucidator {
     if (!elucidator.showwri) return;
     console.log(`${this.mdname}: ${any}`);
   }
+
+  thr(err) {
+    throw `${this.mdname}: ${err}`
+  }
 }

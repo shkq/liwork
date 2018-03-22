@@ -1,14 +1,21 @@
 import * as fs from "fs"
 import * as Path from "path"
 
-import mdBase from "../mdBase"
+import { MdBase } from "../mdBase"
 import ProcessCenter from "../../processCenter"
 import * as strFunc from "../../lib/js/strFunc"
 import elucidator from "../../lib/js/elucidator"
 import * as fsFunc from "../../lib/node/fsFunc"
-import liwork from "../../liwork";
+import { CommandLike } from "../../lib/node/commandGetter";
 
-interface data extends liwork.dataBase { }
+interface workConfig {
+  list: {
+    originalPath: string
+    targetPath: string
+    extra: string[]
+  }[]
+  interval?: number
+}
 
 interface workListItem {
   originalPath: string
@@ -17,111 +24,133 @@ interface workListItem {
   timerIdentifier: NodeJS.Timer
 }
 
+const defConfigName = "liworkSyn.json";
 const elu = new elucidator("mdSynchronous");
+const mainName = "-syn"
+const subAppoint = "--appoint"
+const subCopy = "--copy"
 
-export default class mdSynchronous extends mdBase {
+export {
+  mdSynchronous
+}
+
+class mdSynchronous extends MdBase {
   constructor(center: ProcessCenter) {
-    super(center, 'syn', Path.join('./', 'data', 'syndata.data'));
+    super(mainName);
   }
 
-  protected data: data = null
-  private originalPath: string = ''
-  private targetPath: string = ''
-  private extra: string[] = []
-  private reverseBeforeStart = false
-  private readonly refrushTime = 1000 * 60 * 5
+  private command: CommandLike = null
   private workList: workListItem[] = []
+  private config: workConfig = null
 
-  protected init() {
-    super.init();
-    this.center.on(this.getSfEvents('start'), (args: string[]) => {
-      this.startWork();
-    });
-    this.center.on(this.getSfEvents('close'), (args: string[]) => {
-      this.closeWork(args[0]);
-    });
-    this.center.on(this.getSfEvents('save'), (args: string[]) => {
-      this.setSavePath(args[0]);
-    });
-    this.center.on(this.getSfEvents('work'), (args: string[]) => {
-      this.setWorkPath(args[0]);
-    });
-    this.center.on(this.getSfEvents('extra'), (args: string[]) => {
-      this.setExtra(args[0]);
-    });
-    this.center.on(this.getSfEvents('list'), (args: string[]) => {
-      this.showList();
-    });
-    this.center.on(this.getSfEvents('json'), (args: string[]) => {
-      this.loadIni(args[0]);
-    });
-  }
-  protected destroy() {
-    super.destroy();
-    this.closeAll();
-  }
-  protected onFocus() {
-    super.onFocus();
-
-  }
-  protected onUnFocus() {
-    super.onUnFocus();
+  async run(command: CommandLike) {
+    this.command = command;
+    this.config = await this.getRunConfig();
+    if (this.startCopy()) return;
+    this.startSyn();
   }
 
-  private setSavePath(path: string) {
-    this.originalPath = Path.normalize(this.getVariable(path));
+  private getRunConfig() {
+    return new Promise<workConfig>((reject, resolve) => {
+      let appoint = this.command.getSub(subAppoint);
+      let configPath = ""
+      if (appoint.have && appoint.argv.length > 0) {
+        configPath = Path.normalize(appoint.argv);
+      }
+      else {
+        configPath = Path.join(process.cwd(), defConfigName);
+      }
+      fs.readFile(configPath, { encoding: "utf8" }, (err, data) => {
+        if (err) {
+          resolve(err);
+        }
+        try {
+          let config: workConfig = JSON.parse(data);
+          for (let i = 0; i < config.list.length; ++i) {
+            config.list[i].originalPath = Path.normalize(config.list[i].originalPath);
+            config.list[i].targetPath = Path.normalize(config.list[i].targetPath);
+          }
+          reject(config);
+        }
+        catch (err) {
+          resolve(err);
+        }
+      })
+    })
   }
 
-  private setWorkPath(path: string) {
-    this.targetPath = Path.normalize(this.getVariable(path));
-  }
-
-  private setExtra(extra: string) {
-    this.extra.push(this.getVariable(extra));
-  }
-
-  private startWork() {
-    if (this.originalPath === '') {
-      elu.wri("未设置保存路径");
-      return;
-    }
-    if (this.targetPath === '') {
-      elu.wri("未设置工作路径");
-      return;
-    }
-    if (this.checkWorkRepeat()) {
-      elu.wri(`已有进行中的工作 从 \`${this.originalPath}\` 同步至 \`${this.targetPath}\``);
-      return;
-    }
-    const originalPath = this.originalPath;
-    const targetPath = this.targetPath;
-    const extra = this.extra;
-    let firstSynOriginalPath = originalPath;
-    let firstSynTargetPath = targetPath;
-    if (this.reverseBeforeStart) {
-      firstSynOriginalPath = targetPath;
-      firstSynTargetPath = originalPath;
-    }
-    fsFunc.delThenCopyPath(firstSynOriginalPath, firstSynTargetPath, extra).then(() => {
-      elu.wri(`已将 \`${firstSynOriginalPath}\` 同步至 \`${firstSynTargetPath}\``);
+  private startSyn() {
+    this.checkListRight();
+    for (let i = 0; i < this.config.list.length; i++) {
+      const work = this.config.list[i];
+      const originalPath = work.originalPath;
+      const targetPath = work.targetPath;
+      const extra = work.extra;
       let timerIdentifier = setInterval(() => {
         fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
           elu.wri(`已将 \`${originalPath}\` 同步至 \`${targetPath}\``);
         });
-      }, this.refrushTime);
-      elu.wri(`开启服务从 \`${originalPath}\` 同步至 \`${targetPath}\``);
-      elu.wri(`额外列表: \`${extra}\``);
-      elu.wri(`刷新时间: \`${this.refrushTime}\``);
+      }, this.config.interval);
       this.workList.push({
         originalPath: originalPath,
         targetPath: targetPath,
         extra: extra,
         timerIdentifier: timerIdentifier
-      })
-      this.clean();
-    });
+      });
+      elu.wri(`开启服务从 \`${originalPath}\` 同步至 \`${targetPath}\``);
+      elu.wri(`额外列表: \`${extra}\``);
+      elu.wri(`刷新时间: \`${this.config.interval}\``);
+    }
   }
 
+  private startCopy() {
+    let copyCommand = this.command.getSub(subCopy);
+
+    if (!copyCommand.have) {
+      return false;
+    }
+
+    this.checkListRight();
+
+    for (let i = 0; i < this.config.list.length; ++i) {
+      let originalPath = "";
+      let targetPath = "";
+      let extra = this.config.list[i].extra;
+      if (copyCommand.argv === "false") {
+        originalPath = this.config.list[i].targetPath;
+        targetPath = this.config.list[i].originalPath;
+      }
+      else {
+        originalPath = this.config.list[i].originalPath;
+        targetPath = this.config.list[i].targetPath;
+      }
+      fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
+        elu.wri(`已将 \`${originalPath}\` 复制至 \`${targetPath}\``);
+      });
+    }
+
+    return true;
+  }
+
+  private checkListRight() {
+    for (let i = 0; i < this.config.list.length; ++i) {
+      let work = this.config.list[i];
+      if (typeof work.originalPath === "undefined" ||
+        work.originalPath === '') {
+        elu.thr("未设置保存路径");
+      }
+      if (typeof work.targetPath === "undefined" ||
+        work.targetPath === '') {
+        elu.thr("未设置工作路径");
+      }
+      if (typeof work.extra === "undefined" ||
+        !(work.extra instanceof Array)) {
+        work.extra = [];
+      }
+    }
+  }
+
+  // 无用,暂且保留
   private showList() {
     this.workList.forEach((ele, index) => {
       elu.wri(`服务 \`${index}\` 从 \`${ele.originalPath}\` 同步至 \`${ele.targetPath}\``);
@@ -150,46 +179,5 @@ export default class mdSynchronous extends mdBase {
       elu.wri(`已关闭服务 \`${identifierNum}\``);
     });
     this.workList = [];
-  }
-
-  private loadIni(path: string) {
-    try {
-      path = Path.normalize(this.getVariable(path));
-      fs.readFile(path, 'utf8', (err, data) => {
-        if (err) {
-          elu.err(err);
-          return;
-        }
-        let ini = JSON.parse(data);
-        for (let i = 0; i < ini.list.length; i++) {
-          let ele = ini.list[i]
-          this.originalPath = ele.originalPath;
-          this.targetPath = ele.targetPath;
-          this.extra = ele.extra;
-          this.reverseBeforeStart = ele.reverseBeforeStart;
-          this.startWork();
-        }
-      });
-    }
-    catch (err) {
-      elu.err(err);
-      elu.err("读取配置出错,请检查配置文件格式是否正确");
-    }
-  }
-
-  private checkWorkRepeat() {
-    this.workList.forEach(ele => {
-      if (ele.targetPath === this.targetPath && ele.originalPath === this.originalPath) {
-        return true;
-      }
-    });
-    return false;
-  }
-
-  private clean() {
-    this.originalPath = '';
-    this.targetPath = '';
-    this.extra = [];
-    this.reverseBeforeStart = false;
   }
 }

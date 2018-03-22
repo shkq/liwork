@@ -5,11 +5,11 @@ export {
 }
 
 abstract class MdBase {
-  constructor() {
+  constructor(
+    readonly mainName: string = null
+  ) {
 
   }
-
-  readonly mainName: string = null
 
   abstract run(command: CommandLike)
 }
