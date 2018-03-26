@@ -6,14 +6,16 @@ import * as strFunc from "../../lib/js/strFunc"
 import elucidator from "../../lib/js/elucidator"
 import * as fsFunc from "../../lib/node/fsFunc"
 import { CommandLike } from "../../lib/node/commandGetter";
+import { checkArr } from "../../lib/js/arrFunc";
 
 interface workConfig {
   list: {
     originalPath: string
     targetPath: string
-    extra: string[]
+    extra?: string[]
   }[]
   interval?: number
+  extra?: string[]
 }
 
 interface workListItem {
@@ -68,10 +70,7 @@ class mdSynchronous extends MdBase {
         }
         try {
           let config: workConfig = JSON.parse(data);
-          for (let i = 0; i < config.list.length; ++i) {
-            config.list[i].originalPath = Path.normalize(config.list[i].originalPath);
-            config.list[i].targetPath = Path.normalize(config.list[i].targetPath);
-          }
+          config = this.normalizeCfg(config);
           reject(config);
         }
         catch (err) {
@@ -82,7 +81,6 @@ class mdSynchronous extends MdBase {
   }
 
   private startSyn() {
-    this.checkListRight();
     for (let i = 0; i < this.config.list.length; i++) {
       const work = this.config.list[i];
       const originalPath = work.originalPath;
@@ -112,8 +110,6 @@ class mdSynchronous extends MdBase {
       return false;
     }
 
-    this.checkListRight();
-
     for (let i = 0; i < this.config.list.length; ++i) {
       let originalPath = "";
       let targetPath = "";
@@ -134,25 +130,27 @@ class mdSynchronous extends MdBase {
     return true;
   }
 
-  private checkListRight() {
-    for (let i = 0; i < this.config.list.length; ++i) {
+  private normalizeCfg(config: workConfig) {
+    config.extra = checkArr(config.extra);
+    for (let i = 0; i < config.list.length; ++i) {
       let work = this.config.list[i];
       if (typeof work.originalPath === "undefined" ||
         work.originalPath === '') {
-        elu.thr("未设置保存路径");
+        elu.thr(`\`${i}\`未设置保存路径`);
       }
       if (typeof work.targetPath === "undefined" ||
         work.targetPath === '') {
-        elu.thr("未设置工作路径");
+        elu.thr(`\`${i}\`未设置工作路径`);
       }
-      if (typeof work.extra === "undefined" ||
-        !(work.extra instanceof Array)) {
-        work.extra = [];
-      }
+      work.originalPath = Path.normalize(config.list[i].originalPath);
+      work.targetPath = Path.normalize(config.list[i].targetPath);
+      work.extra = checkArr(config.list[i].extra);
+      work.extra = work.extra.concat(config.extra);
     }
     if (typeof this.config.interval === "undefined") {
       this.config.interval = 10 * 60 * 1000;
-    } 
+    }
+    return config;
   }
 
   // 无用,暂且保留
