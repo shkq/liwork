@@ -1,7 +1,8 @@
 import * as fs from 'fs'
 import * as Path from 'path'
 import elucidator from '../js/elucidator'
-import { exec } from 'child_process';
+import { exec } from 'child_process'
+import { isRegExp } from '../js/strFunc';
 
 const elu = new elucidator('fsFunc');
 elu.showlog = false;
@@ -259,11 +260,17 @@ export function delEmptyDirPath(path: string) {
   });
 }
 
+// 支持正则表达式
 export function checkInextra(filename: string, extra: string[]) {
   let isExtra = false;
   extra.forEach(extraEle => {
     if (filename === extraEle) {
       isExtra = true;
+    }
+    else {
+      if (isRegExp(extraEle) && new RegExp(extraEle).test(filename)) {
+        isExtra = true;
+      }
     }
   });
   return isExtra;

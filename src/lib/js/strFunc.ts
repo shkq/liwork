@@ -37,18 +37,18 @@ export function removeAnnotation(str: string) {
 }
 
 // 两边及移除多余空格或退格(只保留1个空格)
-export function removeBlank(str: string) { 
+export function removeBlank(str: string) {
     str.trim();
-    while(true) {
+    while (true) {
         let posi = str.search(/\s\s/);
         if (posi === -1) break;
         else {
-            str = str.replace(/\s\s/," ");;
+            str = str.replace(/\s\s/, " ");;
         }
         posi = str.search(/\t/);
         if (posi === -1) break;
         else {
-            str = str.replace(/\t/," ");
+            str = str.replace(/\t/, " ");
         }
     }
     return str;
@@ -62,4 +62,10 @@ export function isVariable(str: string) {
     else {
         return false;
     }
+}
+
+// 是否是正则表达式
+export function isRegExp(str: string) {
+    if (/\/(.*)\//.test(str)) return true;
+    else return false;
 }
