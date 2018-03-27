@@ -123,7 +123,7 @@ class mdSynchronous extends MdBase {
         targetPath = this.config.list[i].targetPath;
       }
       fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
-        elu.wri(`已将 \`${originalPath}\` 复制至 \`${targetPath}\``);
+        elu.wri(`${new Date().toTimeString()}: 已将 \`${originalPath}\` 复制至 \`${targetPath}\``);
       });
     }
 
