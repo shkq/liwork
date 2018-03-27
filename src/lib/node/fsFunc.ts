@@ -264,13 +264,16 @@ export function delEmptyDirPath(path: string) {
 export function checkInextra(filename: string, extra: string[]) {
   let isExtra = false;
   extra.forEach(extraEle => {
-    if (filename === extraEle) {
+    // if (filename === extraEle) {
+    //   isExtra = true;
+    // }
+    // else {
+    //   if (isRegExp(extraEle) && new RegExp(extraEle).test(filename)) {
+    //     isExtra = true;
+    //   }
+    // }
+    if (new RegExp(extraEle).test(filename)) {
       isExtra = true;
-    }
-    else {
-      if (isRegExp(extraEle) && new RegExp(extraEle).test(filename)) {
-        isExtra = true;
-      }
     }
   });
   return isExtra;

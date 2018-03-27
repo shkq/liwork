@@ -55,7 +55,7 @@ class mdSynchronous extends MdBase {
   }
 
   private getRunConfig() {
-    return new Promise<workConfig>((reject, resolve) => {
+    return new Promise<workConfig>((resolve, reject) => {
       let appoint = this.command.getSub(subAppoint);
       let configPath = ""
       if (appoint.have && appoint.argv.length > 0) {
@@ -66,15 +66,15 @@ class mdSynchronous extends MdBase {
       }
       fs.readFile(configPath, { encoding: "utf8" }, (err, data) => {
         if (err) {
-          resolve(err);
+          reject(err);
         }
         try {
           let config: workConfig = JSON.parse(data);
           config = this.normalizeCfg(config);
-          reject(config);
+          resolve(config);
         }
         catch (err) {
-          resolve(err);
+          reject(err);
         }
       })
     })
@@ -133,7 +133,7 @@ class mdSynchronous extends MdBase {
   private normalizeCfg(config: workConfig) {
     config.extra = checkArr(config.extra);
     for (let i = 0; i < config.list.length; ++i) {
-      let work = this.config.list[i];
+      let work = config.list[i];
       if (typeof work.originalPath === "undefined" ||
         work.originalPath === '') {
         elu.thr(`\`${i}\`未设置保存路径`);
@@ -147,8 +147,8 @@ class mdSynchronous extends MdBase {
       work.extra = checkArr(config.list[i].extra);
       work.extra = work.extra.concat(config.extra);
     }
-    if (typeof this.config.interval === "undefined") {
-      this.config.interval = 10 * 60 * 1000;
+    if (typeof config.interval === "undefined") {
+      config.interval = 10 * 60 * 1000;
     }
     return config;
   }

@@ -1,0 +1,22 @@
+{
+  "list": [
+    {
+      "originalPath": "F:\\_Svn\\H5Svn\\test\\libdts",
+      "targetPath": "F:\\_Svn\\H5Svn\\_shH5Base\\libdts",
+      "extra": [
+        "game"
+      ]
+    },
+    {
+      "originalPath": "F:\\_Svn\\H5Svn\\test\\assets\\lib",
+      "targetPath": "F:\\_Svn\\H5Svn\\_shH5Base\\assets\\lib",
+      "extra": [
+        "_ProSet"
+      ]
+    }
+  ],
+  "interval": 600000,
+  "extra": [
+    "(.*)\\.meta"
+  ]
+}
