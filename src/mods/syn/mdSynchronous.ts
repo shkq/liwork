@@ -88,7 +88,8 @@ class mdSynchronous extends MdBase {
       const extra = work.extra;
       let timerIdentifier = setInterval(() => {
         fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
-          elu.wri(`${new Date().toTimeString()}: 已将 \`${originalPath}\` 同步至 \`${targetPath}\``);
+          let time = new Date().toLocaleTimeString();
+          elu.wri(`${time} 已将 \`${originalPath}\` 同步至 \`${targetPath}\``);
         });
       }, this.config.interval);
       this.workList.push({
@@ -123,7 +124,8 @@ class mdSynchronous extends MdBase {
         targetPath = this.config.list[i].targetPath;
       }
       fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
-        elu.wri(`${new Date().toTimeString()}: 已将 \`${originalPath}\` 复制至 \`${targetPath}\``);
+        let time = new Date().toLocaleTimeString();
+        elu.wri(`${time} 已将 \`${originalPath}\` 复制至 \`${targetPath}\``);
       });
     }
 
