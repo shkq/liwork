@@ -5,8 +5,8 @@ import { MdBase } from "../mdBase"
 import * as strFunc from "../../lib/js/strFunc"
 import elucidator from "../../lib/js/elucidator"
 import * as fsFunc from "../../lib/node/fsFunc"
-import { CommandLike } from "../../lib/node/commandGetter";
-import { checkArr } from "../../lib/js/arrFunc";
+import { CommandLike } from "../../lib/node/commandGetter"
+import { checkArr } from "../../lib/js/arrFunc"
 
 interface workConfig {
   list: {
@@ -27,9 +27,9 @@ interface workListItem {
 
 const defConfigName = "liworkSyn.json";
 const elu = new elucidator("mdSynchronous");
-const mainName = "-syn"
-const subAppoint = "--appoint"
-const subCopy = "--copy"
+const mainName = "-syn";
+const subAppoint = "--appoint";
+const subCopy = "--copy";
 
 export {
   mdSynchronous
