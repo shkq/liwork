@@ -6,10 +6,12 @@ export {
 
 abstract class MdBase {
   constructor(
-
+    command: CommandLike
   ) {
-
+    this.command = command;
   }
 
-  abstract run(command: CommandLike)
+  protected command: CommandLike = null
+
+  public abstract async run()
 }

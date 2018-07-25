@@ -12,7 +12,7 @@ export default class elucidator {
   log(any) {
     if (!this.showlog) return;
     if (!elucidator.showlog) return;
-    console.log(`${this.mdname}: ${any}`);
+    console.log(`${this.mdname}: ${any}\n`);
   }
 
   showerr = true

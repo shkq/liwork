@@ -27,9 +27,9 @@ interface workListItem {
 
 const defConfigName = "liworkSyn.json";
 const elu = new elucidator("mdSynchronous");
-const mainName = "-syn";
-const subAppoint = "--appoint";
-const subCopy = "--copy";
+const mainName = "-syn"
+const subAppoint = "--appoint"
+const subCopy = "--copy"
 
 export {
   mdSynchronous
@@ -39,16 +39,14 @@ class mdSynchronous extends MdBase {
 
   static readonly mainName = mainName
 
-  constructor() {
-    super();
+  constructor(command: CommandLike) {
+    super(command);
   }
 
-  private command: CommandLike = null
   private workList: workListItem[] = []
   private config: workConfig = null
 
-  async run(command: CommandLike) {
-    this.command = command;
+  async run() {
     this.config = await this.getRunConfig();
     if (this.startCopy()) return;
     this.startSyn();
@@ -89,7 +87,7 @@ class mdSynchronous extends MdBase {
       let timerIdentifier = setInterval(() => {
         fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
           let time = new Date().toLocaleTimeString();
-          elu.wri(`${time} 已将 \`${originalPath}\` 同步至 \`${targetPath}\``);
+          elu.wri(`${time} Copy \`${originalPath}\` To \`${targetPath}\``);
         });
       }, this.config.interval);
       this.workList.push({
@@ -98,9 +96,9 @@ class mdSynchronous extends MdBase {
         extra: extra,
         timerIdentifier: timerIdentifier
       });
-      elu.wri(`开启服务从 \`${originalPath}\` 同步至 \`${targetPath}\``);
-      elu.wri(`额外列表: \`${extra}\``);
-      elu.wri(`刷新时间: \`${this.config.interval}\``);
+      elu.wri(`Start Sever: Copy \`${originalPath}\` To \`${targetPath}\``);
+      elu.wri(`Extra List: \`${extra}\``);
+      elu.wri(`Interval: \`${this.config.interval}\``);
     }
   }
 
@@ -125,7 +123,7 @@ class mdSynchronous extends MdBase {
       }
       fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
         let time = new Date().toLocaleTimeString();
-        elu.wri(`${time} 已将 \`${originalPath}\` 复制至 \`${targetPath}\``);
+        elu.wri(`${time} Copy \`${originalPath}\` To \`${targetPath}\``);
       });
     }
 
@@ -138,11 +136,11 @@ class mdSynchronous extends MdBase {
       let work = config.list[i];
       if (typeof work.originalPath === "undefined" ||
         work.originalPath === '') {
-        elu.thr(`\`${i}\`未设置保存路径`);
+        elu.thr(`\`${i}\`Unsetted Save Path`);
       }
       if (typeof work.targetPath === "undefined" ||
         work.targetPath === '') {
-        elu.thr(`\`${i}\`未设置工作路径`);
+        elu.thr(`\`${i}\`Unsetted Work Path`);
       }
       work.originalPath = Path.normalize(config.list[i].originalPath);
       work.targetPath = Path.normalize(config.list[i].targetPath);
