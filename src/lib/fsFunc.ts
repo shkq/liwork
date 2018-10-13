@@ -1,8 +1,8 @@
 import * as fs from 'fs'
 import * as Path from 'path'
-import elucidator from '../js/elucidator'
+import elucidator from './elucidator'
 import { exec } from 'child_process'
-import { isRegExp } from '../js/strFunc';
+import { isRegExp } from './strFunc';
 
 const elu = new elucidator('fsFunc');
 elu.showlog = false;
