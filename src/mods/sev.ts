@@ -12,15 +12,15 @@ import * as Express from "express"
 import * as Path from "path"
 import * as ExpressCore from "express-serve-static-core"
 
-import { MdBase } from "../mdBase"
-import { CommandLike } from "../../lib/node/commandGetter"
-import elucidator from "../../lib/js/elucidator"
+import MdBase from "../lib/mdBase"
+import { CommandLike } from "../lib/commandGetter"
+import elucidator from "../lib/elucidator"
 
 const logger = new elucidator("mdSever");
 const mainName = "-sev"
 const subPat = "--path"
 
-export class mdSever extends MdBase {
+export default class extends MdBase {
 
     static mainName = mainName
 

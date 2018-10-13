@@ -1,12 +1,12 @@
 import * as fs from "fs"
 import * as Path from "path"
 
-import { MdBase } from "../mdBase"
-import * as strFunc from "../../lib/js/strFunc"
-import elucidator from "../../lib/js/elucidator"
-import * as fsFunc from "../../lib/node/fsFunc"
-import { CommandLike } from "../../lib/node/commandGetter"
-import { checkArr } from "../../lib/js/arrFunc"
+import MdBase from "../lib/mdBase"
+import * as strFunc from "../lib/strFunc"
+import elucidator from "../lib/elucidator"
+import * as fsFunc from "../lib/fsFunc"
+import { CommandLike } from "../lib/commandGetter"
+import { checkArr } from "../lib/arrFunc"
 
 interface workConfig {
   list: {
@@ -31,11 +31,7 @@ const mainName = "-syn"
 const subAppoint = "--appoint"
 const subCopy = "--copy"
 
-export {
-  mdSynchronous
-}
-
-class mdSynchronous extends MdBase {
+export default class extends MdBase {
 
   static readonly mainName = mainName
 

@@ -1,4 +1,4 @@
-import { getArrCopy } from "../js/arrFunc"
+import { getArrCopy } from "./arrFunc"
 
 export {
   CommandGetter,

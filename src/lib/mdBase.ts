@@ -1,10 +1,6 @@
-import { CommandLike } from "../lib/node/commandGetter";
+import { CommandLike } from "./commandGetter";
 
-export {
-  MdBase
-}
-
-abstract class MdBase {
+export default abstract class {
   constructor(
     command: CommandLike
   ) {

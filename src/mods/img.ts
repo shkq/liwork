@@ -16,15 +16,15 @@ import * as imageminPngquant from "imagemin-pngquant"
 // const imageminJpegtran = require('imagemin-jpegtran');
 // const imageminPngquant = require('imagemin-pngquant');
 
-import { MdBase } from "../mdBase"
-import { CommandLike } from "../../lib/node/commandGetter"
-import elucidator from "../../lib/js/elucidator"
+import MdBase from "../lib/mdBase"
+import { CommandLike } from "../lib/commandGetter"
+import elucidator from "../lib/elucidator"
 
 const logger = new elucidator("mdImagemin");
 const mainName = "-img"
 const subCCC = "--ccc"
 
-export class mdImagemin extends MdBase {
+export default class extends MdBase {
 
     static mainName = mainName
 
@@ -63,7 +63,7 @@ export class mdImagemin extends MdBase {
 
         let paths = await this.searchFolder(togglePath);
         for (let i = 0; i < paths.length; ++i) {
-            this.compress([Path.join(paths[i],"*.{jpg,png}")],paths[i]);
+            this.compress([Path.join(paths[i], "*.{jpg,png}")], paths[i]);
         }
 
         // await imagemin([Path.join(togglePath, "**", "*.{jpg,png}")], Path.join(togglePath, "build"), {
@@ -85,8 +85,8 @@ export class mdImagemin extends MdBase {
 
     private async searchFolder(togglePath: string): Promise<string[]> {
         let paths: string[] = [];
-        return new Promise<string[]>((resolve,reject)=>{
-            fs.readdir(togglePath,(err,file)=>{
+        return new Promise<string[]>((resolve, reject) => {
+            fs.readdir(togglePath, (err, file) => {
                 if (err) {
                     reject(err);
                 }
@@ -95,14 +95,14 @@ export class mdImagemin extends MdBase {
                 }
                 let searchs: Promise<string[]>[] = [];
                 for (let i = 0; i < file.length; ++i) {
-                    let path = Path.join(togglePath,file[i]);
+                    let path = Path.join(togglePath, file[i]);
                     if (fs.statSync(path).isDirectory()) {
                         paths.push(path);
                         searchs.push(this.searchFolder(path));
                     }
                 }
                 Promise.all(searchs)
-                    .then((backPaths)=>{
+                    .then((backPaths) => {
                         for (let i = 0; i < backPaths.length; ++i) {
                             paths = paths.concat(backPaths[i]);
                         }
