@@ -7,9 +7,6 @@
  * Remark: 
  */
 
-
-import { getArrCopy } from "./arrFunc"
-
 export interface CommandLike {
     /**
      * 命令
@@ -27,12 +24,6 @@ export interface CommandLike {
      * 命令的层级
      */
     level: number
-}
-
-export class Command {
-    constructor(
-        private _cmd: CommandLike[]
-    ) { }
 }
 
 export class CommandGetter {

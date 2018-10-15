@@ -1,4 +1,4 @@
-import { CommandGetter } from "./lib/commandGetter";
+import { CommandGetter, CommandLike } from "./lib/CMDGetter";
 import MdBase from "./lib/mdBase";
 
 export {
@@ -6,13 +6,13 @@ export {
 }
 
 async function start() {
-
-  const command = CommandGetter.get();
-  const runMod = await import("./mods/" + command.main);
+  const command = new CommandGetter(process.argv.slice(2));
+  const Mod: new (cmdLike: CommandLike[]) => MdBase = await import("./mods/" + command.getMain());
+  let runMod = new Mod(command.getSub());
   if (runMod) {
-    await (<MdBase>new runMod(command)).run();
+    await runMod.run();
   }
   else {
-    throw `主命令${command.main}不存在`
+    throw `主命令${command.getMain()}不存在`
   }
 }
