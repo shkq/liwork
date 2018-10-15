@@ -4,6 +4,7 @@
 
 build/
 data/
+dist/
 
 #//////////
 # VS Code
