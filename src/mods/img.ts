@@ -13,20 +13,14 @@ import * as Path from "path"
 import * as imagemin from "imagemin"
 import * as imageminJpegtran from "imagemin-jpegtran"
 import * as imageminPngquant from "imagemin-pngquant"
-// const imageminJpegtran = require('imagemin-jpegtran');
-// const imageminPngquant = require('imagemin-pngquant');
 
 import ModeBase from "../lib/ModeBase"
 import { CommandLike } from "../lib/CMDGetter"
 import elucidator from "../lib/elucidator"
 
-const logger = new elucidator("mdImagemin");
-const mainName = "-img"
-const subCCC = "--ccc"
+const logger = new elucidator("img");
 
 export default class extends ModeBase {
-
-    static mainName = mainName
 
     constructor(command: CommandLike[]) {
         super(command);
