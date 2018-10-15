@@ -13,6 +13,10 @@ export interface CommandLike {
      */
     name: string
     /**
+     * 命令的层级
+     */
+    level: number
+    /**
      * 命令参数
      */
     argv: string[]
@@ -20,10 +24,6 @@ export interface CommandLike {
      * 子命令
      */
     child: CommandLike[]
-    /**
-     * 命令的层级
-     */
-    level: number
 }
 
 export class CommandGetter {
