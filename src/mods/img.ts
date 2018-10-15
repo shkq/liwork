@@ -16,32 +16,23 @@ import * as imageminPngquant from "imagemin-pngquant"
 // const imageminJpegtran = require('imagemin-jpegtran');
 // const imageminPngquant = require('imagemin-pngquant');
 
-import MdBase from "../lib/mdBase"
-import { CommandLike } from "../lib/commandGetter"
+import ModeBase from "../lib/ModeBase"
+import { CommandLike } from "../lib/CMDGetter"
 import elucidator from "../lib/elucidator"
 
 const logger = new elucidator("mdImagemin");
 const mainName = "-img"
 const subCCC = "--ccc"
 
-export default class extends MdBase {
+export default class extends ModeBase {
 
     static mainName = mainName
 
-    constructor(command: CommandLike) {
+    constructor(command: CommandLike[]) {
         super(command);
     }
 
-    public async run() {
-        if (this.command.getSub(subCCC)) {
-            await this.cccImageMain();
-        }
-        else {
-            logger.wri("不支持的辅助命令");
-        }
-    }
-
-    private async cccImageMain() {
+    private async ccc() {
         const workingPath = process.cwd();
         let togglePath = "";
         // 先看cocos主目录下
