@@ -38,7 +38,7 @@ export default abstract class {
                 await this.runHook(command[i].child, _funcName);
             }
             if (this[_funcName]) {
-                await this[_funcName]();
+                await this[_funcName](command[i].argv);
             }
         }
     }
