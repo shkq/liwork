@@ -33,7 +33,7 @@ export class CommandGetter {
     ) { }
 
     getMain() {
-        return this.argv[0].substr(1);
+        return this.argv[0];
     }
 
     getSub() {
