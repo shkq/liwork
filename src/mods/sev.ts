@@ -8,40 +8,29 @@
  *  
  */
 
-import * as Express from "express"
-import * as Path from "path"
-import * as ExpressCore from "express-serve-static-core"
+import * as Express from "express";
+import * as Path from "path";
+import * as ExpressCore from "express-serve-static-core";
 
-import MdBase from "../lib/mdBase"
-import { CommandLike } from "../lib/commandGetter"
-import elucidator from "../lib/elucidator"
+import ModeBase from "../lib/ModeBase";
+import elucidator from "../lib/elucidator";
 
 const logger = new elucidator("mdSever");
-const mainName = "-sev"
-const subPat = "--path"
 
-export default class extends MdBase {
+export default class extends ModeBase {
 
-    static mainName = mainName
-
-    constructor(command: CommandLike) {
-        super(command);
-    }
-
-    private severPath: string = ""
+    private severPath: string = "";
     private app: ExpressCore.Express = null
 
-    public async run() {
-        if (this.command.getSub(subPat)) {
-            this.severPath = Path.normalize(this.command.getSub(subPat).argv);
-        }
-        else {
-            this.severPath = process.cwd();
-        }
-        this.initSever();
+    protected async onLoad() {
+        this.severPath = process.cwd();
     }
 
-    public initSever() {
+    protected async path(argv: string[]) {
+        this.severPath = Path.normalize(argv[0]);
+    }
+
+    protected async onMain() {
         this.app = Express();
         this.app.use(Express.static(this.severPath));
         let sever = this.app.listen(6868, function () {

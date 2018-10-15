@@ -8,23 +8,18 @@
  *  
  */
 
-import * as fs from "fs"
-import * as Path from "path"
-import * as imagemin from "imagemin"
-import * as imageminJpegtran from "imagemin-jpegtran"
-import * as imageminPngquant from "imagemin-pngquant"
+import * as fs from "fs";
+import * as Path from "path";
+import * as imagemin from "imagemin";
+import * as imageminJpegtran from "imagemin-jpegtran";
+import * as imageminPngquant from "imagemin-pngquant";
 
-import ModeBase from "../lib/ModeBase"
-import { CommandLike } from "../lib/CMDGetter"
-import elucidator from "../lib/elucidator"
+import ModeBase from "../lib/ModeBase";
+import elucidator from "../lib/elucidator";
 
 const logger = new elucidator("img");
 
 export default class extends ModeBase {
-
-    constructor(command: CommandLike[]) {
-        super(command);
-    }
 
     private async ccc() {
         const workingPath = process.cwd();

@@ -13,6 +13,7 @@ export default abstract class {
         try {
             await this.onLoad();
             await this.runHook();
+            await this.onMain();
             await this.onDestroy();
         }
         catch (err) {
@@ -21,7 +22,7 @@ export default abstract class {
     }
 
     protected async onLoad() { }
-
+    protected async onMain() { }
     protected async onDestroy() { }
 
     private async runHook(command?: CommandLike[], funcName?: string) {
