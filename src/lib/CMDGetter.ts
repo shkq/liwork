@@ -14,7 +14,7 @@ export interface CommandLike {
     /**
      * 命令
      */
-    cmd: string
+    name: string
     /**
      * 命令参数
      */
@@ -37,22 +37,26 @@ export class Command {
 
 export class CommandGetter {
 
+    constructor(
+        private argv: string[]
+    ) { }
+
     getMain() {
-        return process.argv[2];
+        return this.argv[0];
     }
 
     getSub() {
         let argv = this.getArgv();
         let cmd: CommandLike[] = [];
         let lastCmd: CommandLike = null;
-        for (let i = 3; i < argv.length; i++) {
+        for (let i = 1; i < argv.length; i++) {
             let current = argv[i];
             if (this.isArgv(current) && lastCmd) {
                 lastCmd.argv.push(current);
             }
             else {
                 let newCmd: CommandLike = this.getCmd(current);
-                if (newCmd.level === lastCmd.level + 1) {
+                if (lastCmd && newCmd.level === lastCmd.level + 1) {
                     lastCmd.child.push(newCmd);
                 }
                 else {
@@ -75,7 +79,7 @@ export class CommandGetter {
     }
 
     private getArgv() {
-        return process.argv.slice();
+        return this.argv.slice();
     }
 
     private isArgv(current: string) {
@@ -90,7 +94,7 @@ export class CommandGetter {
             current = current.substr(1);
         }
         return {
-            cmd: current,
+            name: current,
             argv: [],
             child: [],
             level: level

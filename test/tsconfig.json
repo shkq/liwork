@@ -11,13 +11,17 @@
     // "sourceMap": true,
     // "mapRoot": "./build/maps",
     //仅用来控制输出的目录结构--outDir。
-    "rootDir": "./src",
+    // "rootDirs": [
+    //   "./src",
+    //   "../src"
+    // ],
     //重定向输出目录。
     "outDir": "./dist",
     //在监视模式下运行编译器。会监视输出文件，在它们改变时重新编译。   
     "watch": false
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts",
+    "../src/**/*.ts"
   ]
 }

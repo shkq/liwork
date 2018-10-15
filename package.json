@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/**/*.test.js",
-    "watch": "tsc"
+    "test": "cd ./test/ && tsc && mocha ./dist/**/*.test.js",
+    "build": "tsc"
   },
   "author": "lijj",
   "license": "ISC",
