@@ -8,6 +8,21 @@ const logger = new Elucidator("img");
 
 export default class extends ModeBase {
 
+    protected helpinfo = `
+----------------------------------------
+-path: [指定的路径]?
+指定需要批量重命名文件的文件夹路径,默认为当前文件夹
+----------------------------------------
+-name: [指定的文件名]?
+指定文件重名名后的名字的头
+--time
+以调用命令时的时间戳作为文件头
+----------------------------------------
+-ccc
+ccc 项目内文件的重命名(会同时重命名对应的 .meta 文件)
+----------------------------------------
+    `;
+
     private targetFolder: string = ""
     private nameString: string = ""
     private mainFunc: () => void = null

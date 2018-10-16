@@ -14,6 +14,7 @@ export default abstract class {
     }
 
     private command: CommandLike[] = null
+    protected helpinfo = "没有找到帮助信息";
 
     public async run() {
         try {
@@ -24,6 +25,10 @@ export default abstract class {
         catch (err) {
             console.error(err);
         }
+    }
+
+    public async help() {
+        logger.wri(this.helpinfo);
     }
 
     protected async onLoad() { }
