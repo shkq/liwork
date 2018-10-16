@@ -8,6 +8,9 @@ export default abstract class {
         command: CommandLike[]
     ) {
         this.command = command;
+        process.on("exit", (code) => {
+            await this.onDestroy();
+        });
     }
 
     private command: CommandLike[] = null
@@ -17,7 +20,6 @@ export default abstract class {
             await this.onLoad();
             await this.runHook();
             await this.onMain();
-            await this.onDestroy();
         }
         catch (err) {
             console.error(err);
