@@ -1,4 +1,7 @@
 import { CommandLike } from "./CMDGetter";
+import elucidator from "./elucidator";
+
+const logger = new elucidator("ModeBase");
 
 export default abstract class {
     constructor(
@@ -40,6 +43,9 @@ export default abstract class {
             }
             if (this[_funcName]) {
                 await this[_funcName](command[i].argv);
+            }
+            else {
+                logger.wri(`子命令 ${command[i].name} 不存在`);
             }
         }
     }
