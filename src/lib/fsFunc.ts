@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as Path from 'path'
-import elucidator from './elucidator'
+import elucidator from './Elucidator'
 import { exec } from 'child_process'
 import { isRegExp } from './strFunc';
 

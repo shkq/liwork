@@ -1,5 +1,5 @@
 import { CommandLike } from "./CMDGetter";
-import elucidator from "./elucidator";
+import elucidator from "./Elucidator";
 
 const logger = new elucidator("ModeBase");
 

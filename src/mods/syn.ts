@@ -11,7 +11,7 @@ import * as fs from "fs";
 import * as Path from "path";
 
 import ModeBase from "../lib/ModeBase";
-import elucidator from "../lib/elucidator";
+import elucidator from "../lib/Elucidator";
 import * as fsFunc from "../lib/fsFunc";
 import { checkArr } from "../lib/arrFunc";
 

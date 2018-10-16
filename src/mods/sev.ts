@@ -13,7 +13,7 @@ import * as Path from "path";
 import * as ExpressCore from "express-serve-static-core";
 
 import ModeBase from "../lib/ModeBase";
-import elucidator from "../lib/elucidator";
+import elucidator from "../lib/Elucidator";
 
 const logger = new elucidator("mdSever");
 
