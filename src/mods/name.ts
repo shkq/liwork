@@ -45,15 +45,16 @@ export default class extends ModeBase {
                 logger.err(err);
                 return;
             }
+            file = this.sortFile(file);
             let index = 0;
             for (let i = 0; i < file.length; ++i) {
-                if (Fs.statSync(file[i]).isDirectory()) {
-                    continue;
-                }
                 if (Path.extname(file[i]) === ".meta") {
                     continue;
                 }
-                let newnameHead = file[i].replace(/\/?[^\/]+\/?$/, `${this.nameString}_${index}`);
+                if (Fs.statSync(file[i]).isDirectory()) {
+                    continue;
+                }
+                let newnameHead = file[i].replace(/\/?[^\/]+\/?$/, `${this.nameString}_${this.getIndex(index, Math.ceil(file.length / 2))}`);
                 let newname = newnameHead + Path.extname(file[i]);
                 let oldMeta = file[i] + ".meta";
                 let newnameMeta = newnameHead + Path.extname(file[i]) + ".meta";
@@ -66,7 +67,7 @@ export default class extends ModeBase {
                         logger.wri(`将 ${Path.basename(file[i])} 重命名为 ${Path.basename(newname)}`);
                     }
                 });
-                if (!Fs.statSync(oldMeta)) return;
+                if (!Fs.existsSync(oldMeta)) return;
                 Fs.rename(oldMeta, newnameMeta, (err) => {
                     if (err) {
                         logger.err(err);
@@ -82,12 +83,13 @@ export default class extends ModeBase {
                 logger.err(err);
                 return;
             }
+            file = this.sortFile(file);
             let index = 0;
             for (let i = 0; i < file.length; ++i) {
                 if (Fs.statSync(file[i]).isDirectory()) {
                     continue;
                 }
-                let newname = file[i].replace(/\/?[^\/]+\/?$/, `${this.nameString}_${index}.${Path.extname(file[i])}`);
+                let newname = file[i].replace(/\/?[^\/]+\/?$/, `${this.nameString}_${this.getIndex(index, file.length)}.${Path.extname(file[i])}`);
                 index++;
                 Fs.rename(file[i], newname, (err) => {
                     if (err) {
@@ -103,6 +105,20 @@ export default class extends ModeBase {
 
     protected async onMain() {
         await this.mainFunc();
+    }
+
+    protected getIndex(index: number, max: number) {
+        let returner = index.toString();
+        while (returner.length < max.toString().length) {
+            returner = '0' + returner;
+        }
+        return returner;
+    }
+
+    protected sortFile(file: string[]) {
+        return file.sort((a, b) => {
+            return Fs.statSync(a).size - Fs.statSync(b).size;
+        })
     }
 
 }

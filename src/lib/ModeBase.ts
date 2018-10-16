@@ -8,7 +8,7 @@ export default abstract class {
         command: CommandLike[]
     ) {
         this.command = command;
-        process.on("exit", (code) => {
+        process.on("exit", async (code) => {
             await this.onDestroy();
         });
     }
