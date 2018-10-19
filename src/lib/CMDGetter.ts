@@ -33,7 +33,12 @@ export class CommandGetter {
     ) { }
 
     getMain() {
-        return this.argv[0];
+        if (this.argv[0] && this.argv[0][0] !== "-") {
+            return this.argv[0];
+        }
+        else {
+            return null;
+        }
     }
 
     getSub() {

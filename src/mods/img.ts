@@ -15,9 +15,7 @@ import * as imageminJpegtran from "imagemin-jpegtran";
 import * as imageminPngquant from "imagemin-pngquant";
 
 import ModeBase from "../lib/ModeBase";
-import elucidator from "../lib/Elucidator";
-
-const logger = new elucidator("img");
+import logger from "../lib/Elucidator";
 
 export default class extends ModeBase {
 

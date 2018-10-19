@@ -11,7 +11,7 @@ import * as fs from "fs";
 import * as Path from "path";
 
 import ModeBase from "../lib/ModeBase";
-import elucidator from "../lib/Elucidator";
+import logger from "../lib/Elucidator";
 import * as fsFunc from "../lib/fsFunc";
 import { checkArr } from "../lib/arrFunc";
 
@@ -33,7 +33,6 @@ interface workListItem {
 }
 
 const defConfigName = "liworkSyn.json";
-const elu = new elucidator("mdSynchronous");
 
 export default class extends ModeBase {
 
@@ -76,7 +75,7 @@ export default class extends ModeBase {
             let timerIdentifier = setInterval(() => {
                 fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
                     let time = new Date().toLocaleTimeString();
-                    elu.wri(`${time} Copy \`${originalPath}\` To \`${targetPath}\``);
+                    logger.wri(`${time} Copy \`${originalPath}\` To \`${targetPath}\``);
                 });
             }, this.config.interval);
             this.workList.push({
@@ -85,9 +84,9 @@ export default class extends ModeBase {
                 extra: extra,
                 timerIdentifier: timerIdentifier
             });
-            elu.wri(`Start Sever: Copy \`${originalPath}\` To \`${targetPath}\``);
-            elu.wri(`Extra List: \`${extra}\``);
-            elu.wri(`Interval: \`${this.config.interval}\``);
+            logger.wri(`Start Sever: Copy \`${originalPath}\` To \`${targetPath}\``);
+            logger.wri(`Extra List: \`${extra}\``);
+            logger.wri(`Interval: \`${this.config.interval}\``);
         }
     }
 
@@ -106,7 +105,7 @@ export default class extends ModeBase {
             }
             fsFunc.delThenCopyPath(originalPath, targetPath, extra).then(() => {
                 let time = new Date().toLocaleTimeString();
-                elu.wri(`${time} Copy \`${originalPath}\` To \`${targetPath}\``);
+                logger.wri(`${time} Copy \`${originalPath}\` To \`${targetPath}\``);
             });
         }
     }
@@ -117,11 +116,11 @@ export default class extends ModeBase {
             let work = config.list[i];
             if (typeof work.originalPath === "undefined" ||
                 work.originalPath === '') {
-                elu.thr(`\`${i}\`Unsetted Save Path`);
+                logger.thr(`\`${i}\`Unsetted Save Path`);
             }
             if (typeof work.targetPath === "undefined" ||
                 work.targetPath === '') {
-                elu.thr(`\`${i}\`Unsetted Work Path`);
+                logger.thr(`\`${i}\`Unsetted Work Path`);
             }
             work.originalPath = Path.normalize(config.list[i].originalPath);
             work.targetPath = Path.normalize(config.list[i].targetPath);
@@ -137,21 +136,21 @@ export default class extends ModeBase {
     // 无用,暂且保留
     private showList() {
         this.workList.forEach((ele, index) => {
-            elu.wri(`服务 \`${index}\` 从 \`${ele.originalPath}\` 同步至 \`${ele.targetPath}\``);
+            logger.wri(`服务 \`${index}\` 从 \`${ele.originalPath}\` 同步至 \`${ele.targetPath}\``);
         });
     }
 
     private closeWork(identifier: string) {
         let identifierNum = parseInt(identifier);
         if (typeof this.workList[identifierNum] === "undefined") {
-            elu.wri("无效的列表标示");
+            logger.wri("无效的列表标示");
             return;
         }
         clearInterval(this.workList[identifierNum].timerIdentifier);
         fsFunc.delThenCopyPath(this.workList[identifierNum].targetPath,
             this.workList[identifierNum].originalPath, this.workList[identifierNum].extra);
         this.workList.splice(identifierNum, 1);
-        elu.wri(`已关闭服务 \`${identifier}\``);
+        logger.wri(`已关闭服务 \`${identifier}\``);
     }
 
     private closeAll() {
@@ -160,7 +159,7 @@ export default class extends ModeBase {
             clearInterval(this.workList[identifierNum].timerIdentifier);
             fsFunc.delThenCopyPath(this.workList[identifierNum].targetPath,
                 this.workList[identifierNum].originalPath, this.workList[identifierNum].extra);
-            elu.wri(`已关闭服务 \`${identifierNum}\``);
+            logger.wri(`已关闭服务 \`${identifierNum}\``);
         });
         this.workList = [];
     }

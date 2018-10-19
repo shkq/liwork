@@ -1,7 +1,5 @@
 import { CommandLike } from "./CMDGetter";
-import Elucidator from "./Elucidator";
-
-const logger = new Elucidator("ModeBase");
+import logger from "./Elucidator";
 
 export default abstract class {
     constructor(

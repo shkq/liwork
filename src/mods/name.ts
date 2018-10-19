@@ -2,31 +2,24 @@ import * as fs from "fs";
 import * as path from "path";
 
 import ModeBase from "../lib/ModeBase";
-import Elucidator from "../lib/Elucidator";
+import logger from "../lib/Elucidator";
 import { readFileMd5 } from "../lib/Md5";
-
-const logger = new Elucidator("img");
 
 export default class extends ModeBase {
 
-    protected helpinfo = `
-----------------------------------------
--path: [指定的路径]?
+    protected helpinfo =
+        `-path: [指定的路径]?
 指定需要批量重命名文件的文件夹路径,默认为当前文件夹
-----------------------------------------
 -name: [指定的文件名]?
 命名为指定的文件名加序号
---folder
-名字为文件夹名加序号
---time
-名字为时间戳加序号
---md5(未完成，不可使用)
-名字为文件的md5值
-----------------------------------------
+    --folder
+    名字为文件夹名加序号
+    --time
+    名字为时间戳加序号
+    --md5(未完成，不可使用)
+    名字为文件的md5值
 -ccc
-ccc 项目内文件的重命名(会同时重命名对应的 .meta 文件)
-----------------------------------------
-    `;
+ccc 项目内文件的重命名(会同时重命名对应的 .meta 文件)`;
 
     private targetFolder: string = ""
     private nameString: string = ""

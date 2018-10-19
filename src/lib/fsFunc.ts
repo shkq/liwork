@@ -1,11 +1,8 @@
 import * as fs from 'fs'
 import * as Path from 'path'
-import elucidator from './Elucidator'
+import logger from './Elucidator'
 import { exec } from 'child_process'
 import { isRegExp } from './strFunc';
-
-const elu = new elucidator('fsFunc');
-elu.showlog = false;
 
 /** 复制路径结构 */
 export function copyDirPath(originalPath: string, targetPath: string) {
@@ -14,7 +11,7 @@ export function copyDirPath(originalPath: string, targetPath: string) {
     targetPath = Path.normalize(targetPath);
     fs.readdir(originalPath, (err, file) => {
       if (err) {
-        elu.err(err);
+        logger.err(err);
         res();
         return;
       }
@@ -36,7 +33,7 @@ export function copyDirPath(originalPath: string, targetPath: string) {
           let childPath = Path.join(originalPath, element);
           fs.stat(childPath, (err, stat) => {
             if (err) {
-              elu.err(err);
+              logger.err(err);
               finishThenCheck();
               return;
             }
@@ -59,7 +56,7 @@ export function copyDirPath(originalPath: string, targetPath: string) {
               res();
               return;
             }
-            elu.log(`create dir ${targetPath}`);
+            logger.log(`create dir ${targetPath}`);
             next();
           });
         }
@@ -77,7 +74,7 @@ export function copyFilePath(originalPath: string, targetPath: string, extra: st
     targetPath = Path.normalize(targetPath);
     fs.readdir(originalPath, (err, file) => {
       if (err) {
-        elu.err(err);
+        logger.err(err);
         res();
         return;
       }
@@ -96,7 +93,7 @@ export function copyFilePath(originalPath: string, targetPath: string, extra: st
       }
       file.forEach(element => {
         if (checkInextra(element, extra)) {
-          elu.log(`${element} is in extra , back`);
+          logger.log(`${element} is in extra , back`);
           finishThenCheck();
           return;
         }
@@ -104,7 +101,7 @@ export function copyFilePath(originalPath: string, targetPath: string, extra: st
         let toChildPath = Path.join(targetPath, element);
         fs.stat(childPath, (err, stat) => {
           if (err) {
-            elu.err(err);
+            logger.err(err);
             finishThenCheck();
             return;
           }
@@ -116,10 +113,10 @@ export function copyFilePath(originalPath: string, targetPath: string, extra: st
           else {
             fs.copyFile(childPath, toChildPath, err => {
               if (err) {
-                elu.log(err);
+                logger.log(err);
               }
               else {
-                elu.log(`copy file ${toChildPath}`);
+                logger.log(`copy file ${toChildPath}`);
               }
               finishThenCheck();
             });
@@ -136,7 +133,7 @@ export function delFilePath(path: string, extra: string[] = []) {
     path = Path.normalize(path);
     fs.readdir(path, (err, file) => {
       if (err) {
-        elu.err(err);
+        logger.err(err);
         res();
         return;
       }
@@ -154,9 +151,9 @@ export function delFilePath(path: string, extra: string[] = []) {
         }
       }
       file.forEach(element => {
-        // elu.log(`deal ${element}`)
+        // logger.log(`deal ${element}`)
         if (checkInextra(element, extra)) {
-          elu.log(`${element} is in extra , back`);
+          logger.log(`${element} is in extra , back`);
           finishThenCheck();
           return;
         }
@@ -164,7 +161,7 @@ export function delFilePath(path: string, extra: string[] = []) {
           let childPath = Path.join(path, element);
           fs.stat(childPath, (err, stat) => {
             if (err) {
-              elu.err(err);
+              logger.err(err);
               finishThenCheck();
               return;
             }
@@ -176,11 +173,11 @@ export function delFilePath(path: string, extra: string[] = []) {
             else {
               fs.unlink(childPath, err => {
                 if (err) {
-                  elu.err(err);
+                  logger.err(err);
                   finishThenCheck();
                   return;
                 }
-                elu.log(`delete ${childPath}`);
+                logger.log(`delete ${childPath}`);
                 finishThenCheck();
               });
             }
@@ -197,18 +194,18 @@ export function delEmptyDirPath(path: string) {
     path = Path.normalize(path);
     fs.readdir(path, (err, file) => {
       if (err) {
-        elu.err(err);
+        logger.err(err);
         res(false);
         return;
       }
       if (file.length === 0) {
         fs.rmdir(path, err => {
           if (err) {
-            elu.err(err);
+            logger.err(err);
             res(false);
             return;
           }
-          elu.log(`remove empty dir ${path}`);
+          logger.log(`remove empty dir ${path}`);
           res(true);
         });
       }
@@ -225,11 +222,11 @@ export function delEmptyDirPath(path: string) {
           if (fileCount === 0) {
             fs.rmdir(path, err => {
               if (err) {
-                elu.err(err);
+                logger.err(err);
                 res(false);
                 return;
               }
-              elu.log(`remove empty dir ${path}`);
+              logger.log(`remove empty dir ${path}`);
               res(true);
             });
           }
@@ -241,7 +238,7 @@ export function delEmptyDirPath(path: string) {
           let childPath = Path.join(path, element);
           fs.stat(childPath, (err, stat) => {
             if (err) {
-              elu.err(err);
+              logger.err(err);
               finishThenCheck(false);
               return;
             }
@@ -286,7 +283,7 @@ export async function delPath(path: string, extra: string[] = []) {
     await delEmptyDirPath(path);
   }
   catch (err) {
-    elu.err(err);
+    logger.err(err);
   }
 }
 
@@ -297,7 +294,7 @@ export async function copyPath(originalPath: string, targetPath: string, extra: 
     await copyFilePath(originalPath, targetPath, extra);
   }
   catch (err) {
-    elu.err(err);
+    logger.err(err);
   }
 }
 
@@ -308,6 +305,6 @@ export async function delThenCopyPath(originalPath: string, targetPath: string, 
     await copyPath(originalPath, targetPath, extra);
   }
   catch (err) {
-    elu.err(err);
+    logger.err(err);
   }
 }

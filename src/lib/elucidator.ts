@@ -1,39 +1,30 @@
-export default class elucidator {
+export default class {
   static showlog = true;
   static showerr = true;
   static showwri = true;
 
-  constructor(mdname: string) {
-    this.mdname = mdname;
-  }
-  mdname: string = ''
-
-  showlog = true
-  log(any) {
+  static log(any) {
     if (!this.showlog) return;
-    if (!elucidator.showlog) return;
-    console.log(`${this.mdname}: ${any}\n`);
+    console.log(`log: ${any}\n`);
   }
 
-  showerr = true
-  err(err) {
+  static err(err) {
     if (!this.showerr) return;
-    if (!elucidator.showerr) return;
-    console.error('**********ERROR**********');
-    console.error('');
-    console.error(`${this.mdname}: ${err}`);
-    console.error('');
-    console.error('*************************');
+    console.error(`
+**********ERROR**********
+
+${err}
+
+*************************
+    `);
   }
 
-  showwri = true
-  wri(any) {
+  static wri(any) {
     if (!this.showwri) return;
-    if (!elucidator.showwri) return;
-    console.log(`${this.mdname}: ${any}`);
+    console.log(`${any}`);
   }
 
-  thr(err) {
-    throw `${this.mdname}: ${err}`
+  static thr(err) {
+    throw `${err}`
   }
 }
