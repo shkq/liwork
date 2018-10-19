@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import ModeBase from "../lib/ModeBase";
-import logger from "../lib/Elucidator";
+import logger from "../lib/Logger";
 import { readFileMd5 } from "../lib/Md5";
 
 export default class extends ModeBase {

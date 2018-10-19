@@ -1,8 +1,8 @@
 import * as fs from 'fs'
 import * as Path from 'path'
-import logger from './Elucidator'
+import logger from './Logger'
 import { exec } from 'child_process'
-import { isRegExp } from './StrFunc';
+import { isRegExp } from './StringFunc';
 
 /** 复制路径结构 */
 export function copyDirPath(originalPath: string, targetPath: string) {

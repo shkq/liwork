@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { CommandGetter, CommandLike } from "./lib/CMDGetter";
 import MdBase from "./lib/ModeBase";
-import logger from "./lib/Elucidator"
+import logger from "./lib/Logger"
 
 async function start() {
     const command = new CommandGetter(process.argv.slice(2));

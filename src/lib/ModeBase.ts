@@ -1,5 +1,5 @@
 import { CommandLike } from "./CMDGetter";
-import logger from "./Elucidator";
+import logger from "./Logger";
 
 export default abstract class {
     constructor(

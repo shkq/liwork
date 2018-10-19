@@ -13,7 +13,7 @@ import * as Path from "path";
 import * as ExpressCore from "express-serve-static-core";
 
 import ModeBase from "../lib/ModeBase";
-import logger from "../lib/Elucidator";
+import logger from "../lib/Logger";
 
 export default class extends ModeBase {
 

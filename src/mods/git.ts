@@ -1,5 +1,5 @@
 import ModeBase from "../lib/ModeBase";
-import logger from "../lib/Elucidator";
+import logger from "../lib/Logger";
 
 export default class extends ModeBase {
     protected helpinfo =
