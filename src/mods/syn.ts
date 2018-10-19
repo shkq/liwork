@@ -12,8 +12,8 @@ import * as Path from "path";
 
 import ModeBase from "../lib/ModeBase";
 import logger from "../lib/Elucidator";
-import * as fsFunc from "../lib/fsFunc";
-import { checkArr } from "../lib/arrFunc";
+import * as fsFunc from "../lib/FsFunc";
+import { checkArr } from "../lib/ArrFunc";
 
 interface workConfig {
     list: {

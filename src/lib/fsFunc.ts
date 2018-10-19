@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as Path from 'path'
 import logger from './Elucidator'
 import { exec } from 'child_process'
-import { isRegExp } from './strFunc';
+import { isRegExp } from './StrFunc';
 
 /** 复制路径结构 */
 export function copyDirPath(originalPath: string, targetPath: string) {
