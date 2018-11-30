@@ -15,7 +15,7 @@ async function start() {
         await runMod.help();
     }
     else if (!main) {
-        let modPaths = fs.readdirSync(path.join(process.argv[1], "../../dist/mods"));
+        let modPaths = fs.readdirSync(path.join(__dirname, "./mods"));
         for (let i = 0; i < modPaths.length; ++i) {
             let Mod = await import("./mods/" + path.basename(modPaths[i], ".js"));
             const mod: new (cmdLike: CommandLike[]) => MdBase = Mod.default;
