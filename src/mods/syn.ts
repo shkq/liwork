@@ -43,30 +43,12 @@ export default class extends ModeBase {
         this.config = await this.getRunConfig(Path.join(process.cwd(), defConfigName));
     }
 
-    protected async appoint(argv: string[]) {
+    async ["appoint"](argv: string[]) {
         if (!argv[0]) return;
         this.config = await this.getRunConfig(Path.normalize(argv[0]));
     }
 
-    private getRunConfig(configPath: string) {
-        return new Promise<workConfig>((resolve, reject) => {
-            fs.readFile(configPath, { encoding: "utf8" }, (err, data) => {
-                if (err) {
-                    reject(err);
-                }
-                try {
-                    let config: workConfig = JSON.parse(data);
-                    config = this.normalizeCfg(config);
-                    resolve(config);
-                }
-                catch (err) {
-                    reject(err);
-                }
-            })
-        })
-    }
-
-    private async auto() {
+    async ["auto"]() {
         for (let i = 0; i < this.config.list.length; i++) {
             const work = this.config.list[i];
             const originalPath = work.originalPath;
@@ -90,7 +72,7 @@ export default class extends ModeBase {
         }
     }
 
-    private async copy(argv: string[]) {
+    async ["copy"](argv: string[]) {
         for (let i = 0; i < this.config.list.length; ++i) {
             let originalPath = "";
             let targetPath = "";
@@ -109,6 +91,26 @@ export default class extends ModeBase {
             });
         }
     }
+
+    private getRunConfig(configPath: string) {
+        return new Promise<workConfig>((resolve, reject) => {
+            fs.readFile(configPath, { encoding: "utf8" }, (err, data) => {
+                if (err) {
+                    reject(err);
+                }
+                try {
+                    let config: workConfig = JSON.parse(data);
+                    config = this.normalizeCfg(config);
+                    resolve(config);
+                }
+                catch (err) {
+                    reject(err);
+                }
+            })
+        })
+    }
+
+
 
     private normalizeCfg(config: workConfig) {
         config.extra = checkArr(config.extra);

@@ -5,6 +5,7 @@
 build/
 data/
 dist/
+failure/
 
 #//////////
 # VS Code
